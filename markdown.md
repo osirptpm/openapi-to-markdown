@@ -51,7 +51,9 @@ Some useful links:
 
 Everything about your Pets
 
-<h3 id='put--pet'>PUT /pet</h3>
+<h3 id='put--pet'></h3>
+
+### PUT /pet
 
 **Update an existing pet.**
 
@@ -260,7 +262,9 @@ status=example_status
 
 ---
 
-<h3 id='post--pet'>POST /pet</h3>
+<h3 id='post--pet'></h3>
+
+### POST /pet
 
 **Add a new pet to the store.**
 
@@ -464,7 +468,9 @@ status=example_status
 
 ---
 
-<h3 id='get--pet-findByStatus'>GET /pet/findByStatus</h3>
+<h3 id='get--pet-findByStatus'></h3>
+
+### GET /pet/findByStatus
 
 **Finds Pets by status.**
 
@@ -601,7 +607,9 @@ Multiple status values can be provided with comma separated strings.
 
 ---
 
-<h3 id='get--pet-findByTags'>GET /pet/findByTags</h3>
+<h3 id='get--pet-findByTags'></h3>
+
+### GET /pet/findByTags
 
 **Finds Pets by tags.**
 
@@ -738,7 +746,9 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 
 ---
 
-<h3 id='get--pet-petId'>GET /pet/{petId}</h3>
+<h3 id='get--pet-petId'></h3>
+
+### GET /pet/{petId}
 
 **Find pet by ID.**
 
@@ -872,7 +882,9 @@ Returns a single pet.
 
 ---
 
-<h3 id='post--pet-petId'>POST /pet/{petId}</h3>
+<h3 id='post--pet-petId'></h3>
+
+### POST /pet/{petId}
 
 **Updates a pet in the store with form data.**
 
@@ -1007,7 +1019,9 @@ Updates a pet resource based on the form data.
 
 ---
 
-<h3 id='delete--pet-petId'>DELETE /pet/{petId}</h3>
+<h3 id='delete--pet-petId'></h3>
+
+### DELETE /pet/{petId}
 
 **Deletes a pet.**
 
@@ -1078,7 +1092,9 @@ Delete a pet.
 
 ---
 
-<h3 id='post--pet-petId-uploadImage'>POST /pet/{petId}/uploadImage</h3>
+<h3 id='post--pet-petId-uploadImage'></h3>
+
+### POST /pet/{petId}/uploadImage
 
 **Uploads an image.**
 
@@ -1190,7 +1206,9 @@ Upload image of the pet.
 
 Access to Petstore orders
 
-<h3 id='get--store-inventory'>GET /store/inventory</h3>
+<h3 id='get--store-inventory'></h3>
+
+### GET /store/inventory
 
 **Returns pet inventories by status.**
 
@@ -1247,7 +1265,9 @@ Returns a map of status codes to quantities.
 
 ---
 
-<h3 id='post--store-order'>POST /store/order</h3>
+<h3 id='post--store-order'></h3>
+
+### POST /store/order
 
 **Place an order for a pet.**
 
@@ -1374,7 +1394,9 @@ complete=False
 
 ---
 
-<h3 id='get--store-order-orderId'>GET /store/order/{orderId}</h3>
+<h3 id='get--store-order-orderId'></h3>
+
+### GET /store/order/{orderId}
 
 **Find purchase order by ID.**
 
@@ -1474,7 +1496,9 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
 
 ---
 
-<h3 id='delete--store-order-orderId'>DELETE /store/order/{orderId}</h3>
+<h3 id='delete--store-order-orderId'></h3>
+
+### DELETE /store/order/{orderId}
 
 **Delete purchase order by identifier.**
 
@@ -1541,7 +1565,9 @@ For valid response try integer IDs with value < 1000. Anything above 1000 or non
 
 Operations about user
 
-<h3 id='post--user'>POST /user</h3>
+<h3 id='post--user'></h3>
+
+### POST /user
 
 **Create user.**
 
@@ -1687,7 +1713,9 @@ userStatus=1
 
 ---
 
-<h3 id='post--user-createWithList'>POST /user/createWithList</h3>
+<h3 id='post--user-createWithList'></h3>
+
+### POST /user/createWithList
 
 **Creates list of users with given input array.**
 
@@ -1812,7 +1840,9 @@ Creates list of users with given input array.
 
 ---
 
-<h3 id='get--user-login'>GET /user/login</h3>
+<h3 id='get--user-login'></h3>
+
+### GET /user/login
 
 **Logs user into the system.**
 
@@ -1884,7 +1914,9 @@ Log into the system.
 
 ---
 
-<h3 id='get--user-logout'>GET /user/logout</h3>
+<h3 id='get--user-logout'></h3>
+
+### GET /user/logout
 
 **Logs out current logged in user session.**
 
@@ -1926,7 +1958,9 @@ Log user out of the system.
 
 ---
 
-<h3 id='get--user-username'>GET /user/{username}</h3>
+<h3 id='get--user-username'></h3>
+
+### GET /user/{username}
 
 **Get user by user name.**
 
@@ -2032,7 +2066,9 @@ Get user detail based on username.
 
 ---
 
-<h3 id='put--user-username'>PUT /user/{username}</h3>
+<h3 id='put--user-username'></h3>
+
+### PUT /user/{username}
 
 **Update user resource.**
 
@@ -2156,7 +2192,9 @@ userStatus=1
 
 ---
 
-<h3 id='delete--user-username'>DELETE /user/{username}</h3>
+<h3 id='delete--user-username'></h3>
+
+### DELETE /user/{username}
 
 **Delete user resource.**
 

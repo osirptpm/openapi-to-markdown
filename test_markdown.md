@@ -12,7 +12,9 @@
 
 ## 기타
 
-<h3 id='get--test'>GET /test</h3>
+<h3 id='get--test'></h3>
+
+### GET /test
 
 **테스트 API 엔드포인트**
 
@@ -34,8 +36,8 @@
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string |  | \- |
+| `id` | integer | false | \- |
+| `name` | string | false | \- |
 
 **Content Type**: application/json
 
@@ -49,7 +51,9 @@
 
 ---
 
-<h3 id='post--test'>POST /test</h3>
+<h3 id='post--test'></h3>
+
+### POST /test
 
 **테스트 데이터 생성**
 
@@ -65,7 +69,7 @@
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `name` | string |  | \- |
+| `name` | string | false | \- |
 
 **Content Type**: application/json
 
@@ -94,8 +98,8 @@
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string |  | \- |
+| `id` | integer | false | \- |
+| `name` | string | false | \- |
 
 **Content Type**: application/json
 

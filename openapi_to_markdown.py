@@ -681,7 +681,9 @@ def generate_markdown(spec):
         summary = details.get('summary', 'No summary provided')
         description = details.get('description', 'No description provided')
         
-        markdown.append(f"<h3 id='{anchor}'>{method_upper} {path}</h3>\n")
+        # 앵커와 헤더를 분리하여 생성
+        markdown.append(f"<h3 id='{anchor}'></h3>\n")
+        markdown.append(f"### {method_upper} {path}\n")
         markdown.append(f"**{summary}**\n")
         markdown.append(f"{description}\n")
 
