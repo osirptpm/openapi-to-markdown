@@ -76,16 +76,16 @@ Update an existent pet in the store
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string | ✓ | \- |
-| `category` | object |  | \- |
-| `category.id` | integer |  | \- |
-| `category.name` | string |  | \- |
-| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
-| `tags[]` | array&lt;object&gt; |  | \- |
-| `tags[].id` | integer |  | \- |
-| `tags[].name` | string |  | \- |
-| `status` | string |  | pet status in the store |
+| `id` | integer | false | \- |
+| `name` | string | true | \- |
+| `category` | object | false | \- |
+| `category.id` | integer | false | \- |
+| `category.name` | string | false | \- |
+| `photoUrls[]` | array&lt;string&gt; | true | \- |
+| `tags[]` | array&lt;object&gt; | false | \- |
+| `tags[].id` | integer | false | \- |
+| `tags[].name` | string | false | \- |
+| `status` | string | false | pet status in the store |
 
 **Content Type**: application/json
 
@@ -162,16 +162,16 @@ status=example_status
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string | ✓ | \- |
-| `category` | object |  | \- |
-| `category.id` | integer |  | \- |
-| `category.name` | string |  | \- |
-| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
-| `tags[]` | array&lt;object&gt; |  | \- |
-| `tags[].id` | integer |  | \- |
-| `tags[].name` | string |  | \- |
-| `status` | string |  | pet status in the store |
+| `id` | integer | false | \- |
+| `name` | string | true | \- |
+| `category` | object | false | \- |
+| `category.id` | integer | false | \- |
+| `category.name` | string | false | \- |
+| `photoUrls[]` | array&lt;string&gt; | true | \- |
+| `tags[]` | array&lt;object&gt; | false | \- |
+| `tags[].id` | integer | false | \- |
+| `tags[].name` | string | false | \- |
+| `status` | string | false | pet status in the store |
 
 **Content Type**: application/json
 
@@ -245,8 +245,8 @@ status=example_status
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -285,16 +285,16 @@ Create a new pet in the store
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string | ✓ | \- |
-| `category` | object |  | \- |
-| `category.id` | integer |  | \- |
-| `category.name` | string |  | \- |
-| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
-| `tags[]` | array&lt;object&gt; |  | \- |
-| `tags[].id` | integer |  | \- |
-| `tags[].name` | string |  | \- |
-| `status` | string |  | pet status in the store |
+| `id` | integer | false | \- |
+| `name` | string | true | \- |
+| `category` | object | false | \- |
+| `category.id` | integer | false | \- |
+| `category.name` | string | false | \- |
+| `photoUrls[]` | array&lt;string&gt; | true | \- |
+| `tags[]` | array&lt;object&gt; | false | \- |
+| `tags[].id` | integer | false | \- |
+| `tags[].name` | string | false | \- |
+| `status` | string | false | pet status in the store |
 
 **Content Type**: application/json
 
@@ -371,16 +371,16 @@ status=example_status
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string | ✓ | \- |
-| `category` | object |  | \- |
-| `category.id` | integer |  | \- |
-| `category.name` | string |  | \- |
-| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
-| `tags[]` | array&lt;object&gt; |  | \- |
-| `tags[].id` | integer |  | \- |
-| `tags[].name` | string |  | \- |
-| `status` | string |  | pet status in the store |
+| `id` | integer | false | \- |
+| `name` | string | true | \- |
+| `category` | object | false | \- |
+| `category.id` | integer | false | \- |
+| `category.name` | string | false | \- |
+| `photoUrls[]` | array&lt;string&gt; | true | \- |
+| `tags[]` | array&lt;object&gt; | false | \- |
+| `tags[].id` | integer | false | \- |
+| `tags[].name` | string | false | \- |
+| `status` | string | false | pet status in the store |
 
 **Content Type**: application/json
 
@@ -449,8 +449,8 @@ status=example_status
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -487,7 +487,7 @@ Multiple status values can be provided with comma separated strings.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `status` | string |  | Status values that need to be considered for filter (explode: true) (Enum: `available`, `pending`, `sold`) |
+| `status` | string | false | Status values that need to be considered for filter<br>(explode: true)<br>(Enum: `available`, `pending`, `sold`) |
 
 
 
@@ -511,16 +511,16 @@ Multiple status values can be provided with comma separated strings.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string | ✓ | \- |
-| `category` | object |  | \- |
-| `category.id` | integer |  | \- |
-| `category.name` | string |  | \- |
-| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
-| `tags[]` | array&lt;object&gt; |  | \- |
-| `tags[].id` | integer |  | \- |
-| `tags[].name` | string |  | \- |
-| `status` | string |  | pet status in the store |
+| `id` | integer | false | \- |
+| `name` | string | true | \- |
+| `category` | object | false | \- |
+| `category.id` | integer | false | \- |
+| `category.name` | string | false | \- |
+| `photoUrls[]` | array&lt;string&gt; | true | \- |
+| `tags[]` | array&lt;object&gt; | false | \- |
+| `tags[].id` | integer | false | \- |
+| `tags[].name` | string | false | \- |
+| `status` | string | false | pet status in the store |
 
 **Content Type**: application/json
 
@@ -586,8 +586,8 @@ Multiple status values can be provided with comma separated strings.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -624,7 +624,7 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `tags` | array&lt;string&gt; |  | Tags to filter by (explode: true) |
+| `tags` | array&lt;string&gt; | false | Tags to filter by<br>(explode: true) |
 
 
 
@@ -648,16 +648,16 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string | ✓ | \- |
-| `category` | object |  | \- |
-| `category.id` | integer |  | \- |
-| `category.name` | string |  | \- |
-| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
-| `tags[]` | array&lt;object&gt; |  | \- |
-| `tags[].id` | integer |  | \- |
-| `tags[].name` | string |  | \- |
-| `status` | string |  | pet status in the store |
+| `id` | integer | false | \- |
+| `name` | string | true | \- |
+| `category` | object | false | \- |
+| `category.id` | integer | false | \- |
+| `category.name` | string | false | \- |
+| `photoUrls[]` | array&lt;string&gt; | true | \- |
+| `tags[]` | array&lt;object&gt; | false | \- |
+| `tags[].id` | integer | false | \- |
+| `tags[].name` | string | false | \- |
+| `status` | string | false | pet status in the store |
 
 **Content Type**: application/json
 
@@ -723,8 +723,8 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -762,7 +762,7 @@ Returns a single pet.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `petId` | integer | ✓ | ID of pet to return |
+| `petId` | integer | true | ID of pet to return |
 
 
 
@@ -779,16 +779,16 @@ Returns a single pet.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string | ✓ | \- |
-| `category` | object |  | \- |
-| `category.id` | integer |  | \- |
-| `category.name` | string |  | \- |
-| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
-| `tags[]` | array&lt;object&gt; |  | \- |
-| `tags[].id` | integer |  | \- |
-| `tags[].name` | string |  | \- |
-| `status` | string |  | pet status in the store |
+| `id` | integer | false | \- |
+| `name` | string | true | \- |
+| `category` | object | false | \- |
+| `category.id` | integer | false | \- |
+| `category.name` | string | false | \- |
+| `photoUrls[]` | array&lt;string&gt; | true | \- |
+| `tags[]` | array&lt;object&gt; | false | \- |
+| `tags[].id` | integer | false | \- |
+| `tags[].name` | string | false | \- |
+| `status` | string | false | pet status in the store |
 
 **Content Type**: application/json
 
@@ -857,8 +857,8 @@ Returns a single pet.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -895,14 +895,14 @@ Updates a pet resource based on the form data.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `petId` | integer | ✓ | ID of pet that needs to be updated |
+| `petId` | integer | true | ID of pet that needs to be updated |
 
 **query 파라미터:**
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `name` | string |  | Name of pet that needs to be updated |
-| `status` | string |  | Status of pet that needs to be updated |
+| `name` | string | false | Name of pet that needs to be updated |
+| `status` | string | false | Status of pet that needs to be updated |
 
 
 
@@ -919,16 +919,16 @@ Updates a pet resource based on the form data.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string | ✓ | \- |
-| `category` | object |  | \- |
-| `category.id` | integer |  | \- |
-| `category.name` | string |  | \- |
-| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
-| `tags[]` | array&lt;object&gt; |  | \- |
-| `tags[].id` | integer |  | \- |
-| `tags[].name` | string |  | \- |
-| `status` | string |  | pet status in the store |
+| `id` | integer | false | \- |
+| `name` | string | true | \- |
+| `category` | object | false | \- |
+| `category.id` | integer | false | \- |
+| `category.name` | string | false | \- |
+| `photoUrls[]` | array&lt;string&gt; | true | \- |
+| `tags[]` | array&lt;object&gt; | false | \- |
+| `tags[].id` | integer | false | \- |
+| `tags[].name` | string | false | \- |
+| `status` | string | false | pet status in the store |
 
 **Content Type**: application/json
 
@@ -992,8 +992,8 @@ Updates a pet resource based on the form data.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1030,13 +1030,13 @@ Delete a pet.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `api_key` | string |  |  |
+| `api_key` | string | false |  |
 
 **path 파라미터:**
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `petId` | integer | ✓ | Pet id to delete |
+| `petId` | integer | true | Pet id to delete |
 
 
 
@@ -1063,8 +1063,8 @@ Delete a pet.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1101,13 +1101,13 @@ Upload image of the pet.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `petId` | integer | ✓ | ID of pet to update |
+| `petId` | integer | true | ID of pet to update |
 
 **query 파라미터:**
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `additionalMetadata` | string |  | Additional Metadata |
+| `additionalMetadata` | string | false | Additional Metadata |
 
 
 
@@ -1138,9 +1138,9 @@ Upload image of the pet.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | integer |  | \- |
-| `type` | string |  | \- |
-| `message` | string |  | \- |
+| `code` | integer | false | \- |
+| `type` | string | false | \- |
+| `message` | string | false | \- |
 
 **Content Type**: application/json
 
@@ -1171,8 +1171,8 @@ Upload image of the pet.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1232,8 +1232,8 @@ Returns a map of status codes to quantities.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1263,12 +1263,12 @@ Place a new order in the store.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `petId` | integer |  | \- |
-| `quantity` | integer |  | \- |
-| `shipDate` | string |  | \- |
-| `status` | string |  | Order Status |
-| `complete` | boolean |  | \- |
+| `id` | integer | false | \- |
+| `petId` | integer | false | \- |
+| `quantity` | integer | false | \- |
+| `shipDate` | string | false | \- |
+| `status` | string | false | Order Status |
+| `complete` | boolean | false | \- |
 
 **Content Type**: application/json
 
@@ -1320,12 +1320,12 @@ complete=False
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `petId` | integer |  | \- |
-| `quantity` | integer |  | \- |
-| `shipDate` | string |  | \- |
-| `status` | string |  | Order Status |
-| `complete` | boolean |  | \- |
+| `id` | integer | false | \- |
+| `petId` | integer | false | \- |
+| `quantity` | integer | false | \- |
+| `shipDate` | string | false | \- |
+| `status` | string | false | Order Status |
+| `complete` | boolean | false | \- |
 
 **Content Type**: application/json
 
@@ -1359,8 +1359,8 @@ complete=False
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1390,7 +1390,7 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `orderId` | integer | ✓ | ID of order that needs to be fetched |
+| `orderId` | integer | true | ID of order that needs to be fetched |
 
 
 
@@ -1407,12 +1407,12 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `petId` | integer |  | \- |
-| `quantity` | integer |  | \- |
-| `shipDate` | string |  | \- |
-| `status` | string |  | Order Status |
-| `complete` | boolean |  | \- |
+| `id` | integer | false | \- |
+| `petId` | integer | false | \- |
+| `quantity` | integer | false | \- |
+| `shipDate` | string | false | \- |
+| `status` | string | false | Order Status |
+| `complete` | boolean | false | \- |
 
 **Content Type**: application/json
 
@@ -1459,8 +1459,8 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1490,7 +1490,7 @@ For valid response try integer IDs with value < 1000. Anything above 1000 or non
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `orderId` | integer | ✓ | ID of the order that needs to be deleted |
+| `orderId` | integer | true | ID of the order that needs to be deleted |
 
 
 
@@ -1522,8 +1522,8 @@ For valid response try integer IDs with value < 1000. Anything above 1000 or non
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1559,14 +1559,14 @@ Created user object
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `username` | string |  | \- |
-| `firstName` | string |  | \- |
-| `lastName` | string |  | \- |
-| `email` | string |  | \- |
-| `password` | string |  | \- |
-| `phone` | string |  | \- |
-| `userStatus` | integer |  | User Status |
+| `id` | integer | false | \- |
+| `username` | string | false | \- |
+| `firstName` | string | false | \- |
+| `lastName` | string | false | \- |
+| `email` | string | false | \- |
+| `password` | string | false | \- |
+| `phone` | string | false | \- |
+| `userStatus` | integer | false | User Status |
 
 **Content Type**: application/json
 
@@ -1624,14 +1624,14 @@ userStatus=1
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `username` | string |  | \- |
-| `firstName` | string |  | \- |
-| `lastName` | string |  | \- |
-| `email` | string |  | \- |
-| `password` | string |  | \- |
-| `phone` | string |  | \- |
-| `userStatus` | integer |  | User Status |
+| `id` | integer | false | \- |
+| `username` | string | false | \- |
+| `firstName` | string | false | \- |
+| `lastName` | string | false | \- |
+| `email` | string | false | \- |
+| `password` | string | false | \- |
+| `phone` | string | false | \- |
+| `userStatus` | integer | false | User Status |
 
 **Content Type**: application/json
 
@@ -1672,8 +1672,8 @@ userStatus=1
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1710,14 +1710,14 @@ Creates list of users with given input array.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `username` | string |  | \- |
-| `firstName` | string |  | \- |
-| `lastName` | string |  | \- |
-| `email` | string |  | \- |
-| `password` | string |  | \- |
-| `phone` | string |  | \- |
-| `userStatus` | integer |  | User Status |
+| `id` | integer | false | \- |
+| `username` | string | false | \- |
+| `firstName` | string | false | \- |
+| `lastName` | string | false | \- |
+| `email` | string | false | \- |
+| `password` | string | false | \- |
+| `phone` | string | false | \- |
+| `userStatus` | integer | false | User Status |
 
 **Content Type**: application/json
 
@@ -1749,14 +1749,14 @@ Creates list of users with given input array.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `username` | string |  | \- |
-| `firstName` | string |  | \- |
-| `lastName` | string |  | \- |
-| `email` | string |  | \- |
-| `password` | string |  | \- |
-| `phone` | string |  | \- |
-| `userStatus` | integer |  | User Status |
+| `id` | integer | false | \- |
+| `username` | string | false | \- |
+| `firstName` | string | false | \- |
+| `lastName` | string | false | \- |
+| `email` | string | false | \- |
+| `password` | string | false | \- |
+| `phone` | string | false | \- |
+| `userStatus` | integer | false | User Status |
 
 **Content Type**: application/json
 
@@ -1797,8 +1797,8 @@ Creates list of users with given input array.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1828,8 +1828,8 @@ Log into the system.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `username` | string |  | The user name for login |
-| `password` | string |  | The password for login in clear text |
+| `username` | string | false | The user name for login |
+| `password` | string | false | The password for login in clear text |
 
 
 
@@ -1869,8 +1869,8 @@ Log into the system.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1911,8 +1911,8 @@ Log user out of the system.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -1942,7 +1942,7 @@ Get user detail based on username.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `username` | string | ✓ | The name that needs to be fetched\. Use user1 for testing |
+| `username` | string | true | The name that needs to be fetched\. Use user1 for testing |
 
 
 
@@ -1959,14 +1959,14 @@ Get user detail based on username.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `username` | string |  | \- |
-| `firstName` | string |  | \- |
-| `lastName` | string |  | \- |
-| `email` | string |  | \- |
-| `password` | string |  | \- |
-| `phone` | string |  | \- |
-| `userStatus` | integer |  | User Status |
+| `id` | integer | false | \- |
+| `username` | string | false | \- |
+| `firstName` | string | false | \- |
+| `lastName` | string | false | \- |
+| `email` | string | false | \- |
+| `password` | string | false | \- |
+| `phone` | string | false | \- |
+| `userStatus` | integer | false | User Status |
 
 **Content Type**: application/json
 
@@ -2017,8 +2017,8 @@ Get user detail based on username.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -2048,7 +2048,7 @@ This can only be done by the logged in user.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `username` | string | ✓ | name that need to be deleted |
+| `username` | string | true | name that need to be deleted |
 
 
 
@@ -2061,14 +2061,14 @@ Update an existent user in the store
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `username` | string |  | \- |
-| `firstName` | string |  | \- |
-| `lastName` | string |  | \- |
-| `email` | string |  | \- |
-| `password` | string |  | \- |
-| `phone` | string |  | \- |
-| `userStatus` | integer |  | User Status |
+| `id` | integer | false | \- |
+| `username` | string | false | \- |
+| `firstName` | string | false | \- |
+| `lastName` | string | false | \- |
+| `email` | string | false | \- |
+| `password` | string | false | \- |
+| `phone` | string | false | \- |
+| `userStatus` | integer | false | User Status |
 
 **Content Type**: application/json
 
@@ -2141,8 +2141,8 @@ userStatus=1
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -2172,7 +2172,7 @@ This can only be done by the logged in user.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `username` | string | ✓ | The name that needs to be deleted |
+| `username` | string | true | The name that needs to be deleted |
 
 
 
@@ -2204,8 +2204,8 @@ This can only be done by the logged in user.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 **Content Type**: application/json
 
@@ -2228,12 +2228,12 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `petId` | integer |  | \- |
-| `quantity` | integer |  | \- |
-| `shipDate` | string |  | \- |
-| `status` | string |  | Order Status |
-| `complete` | boolean |  | \- |
+| `id` | integer | false | \- |
+| `petId` | integer | false | \- |
+| `quantity` | integer | false | \- |
+| `shipDate` | string | false | \- |
+| `status` | string | false | Order Status |
+| `complete` | boolean | false | \- |
 
 
 
@@ -2274,8 +2274,8 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string |  | \- |
+| `id` | integer | false | \- |
+| `name` | string | false | \- |
 
 
 
@@ -2308,14 +2308,14 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `username` | string |  | \- |
-| `firstName` | string |  | \- |
-| `lastName` | string |  | \- |
-| `email` | string |  | \- |
-| `password` | string |  | \- |
-| `phone` | string |  | \- |
-| `userStatus` | integer |  | User Status |
+| `id` | integer | false | \- |
+| `username` | string | false | \- |
+| `firstName` | string | false | \- |
+| `lastName` | string | false | \- |
+| `email` | string | false | \- |
+| `password` | string | false | \- |
+| `phone` | string | false | \- |
+| `userStatus` | integer | false | User Status |
 
 
 
@@ -2360,8 +2360,8 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string |  | \- |
+| `id` | integer | false | \- |
+| `name` | string | false | \- |
 
 
 
@@ -2394,12 +2394,12 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `id` | integer |  | \- |
-| `name` | string | ✓ | \- |
-| `category` | - |  | \- |
-| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
-| `tags[]` | array&lt;-&gt; |  | \- |
-| `status` | string |  | pet status in the store |
+| `id` | integer | false | \- |
+| `name` | string | true | \- |
+| `category` | - | false | \- |
+| `photoUrls[]` | array&lt;string&gt; | true | \- |
+| `tags[]` | array&lt;-&gt; | false | \- |
+| `status` | string | false | pet status in the store |
 
 
 
@@ -2454,9 +2454,9 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | integer |  | \- |
-| `type` | string |  | \- |
-| `message` | string |  | \- |
+| `code` | integer | false | \- |
+| `type` | string | false | \- |
+| `message` | string | false | \- |
 
 
 
@@ -2491,8 +2491,8 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `code` | string | ✓ | \- |
-| `message` | string | ✓ | \- |
+| `code` | string | true | \- |
+| `message` | string | true | \- |
 
 
 

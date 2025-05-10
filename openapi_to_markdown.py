@@ -115,10 +115,9 @@ def format_schema_as_table(schema, title=None):
             field_name = f"{prefix}{prop_name}"
             prop_type = prop.get('type', '-')
             prop_desc = escape_markdown(prop.get('description', '-'))
-            
             field_required = prop_name in required_props or is_required
             field_required = field_required or parent_required
-            required_mark = "✓" if field_required else ""
+            required_mark = "true" if field_required else "false"
             
             if prop_type == 'array' and 'items' in prop:
                 items = prop['items']
@@ -139,7 +138,7 @@ def format_schema_as_table(schema, title=None):
                                 flat_fields.append({
                                     "name": f"`{field_name}[].{sub_name}`",
                                     "type": sub_type,
-                                    "required": "✓" if sub_required or field_required else "",
+                                    "required": "true" if sub_required or field_required else "false",
                                     "desc": sub_desc
                                 })
                     else:
@@ -164,7 +163,7 @@ def format_schema_as_table(schema, title=None):
                     flat_fields.append({
                         "name": f"`{field_name}.{sub_name}`",
                         "type": sub_type,
-                        "required": "✓" if sub_required or field_required else "",
+                        "required": "true" if sub_required or field_required else "false",
                         "desc": sub_desc
                     })
             else:
@@ -457,36 +456,36 @@ def process_content_examples(content_details, schema, content_type, spec=None):
     return "\n".join(result)
 
 def process_enum_values(schema, description='-'):
-    """스키마의 enum 값을 처리하여 설명에 추가합니다."""
+    """스키마의 enum 값을 처리하여 설명에 개행과 함께 추가합니다."""
     if 'enum' in schema:
         enum_values = schema['enum']
         enum_str = ', '.join([f"`{val}`" for val in enum_values])
         if description != '-':
-            description += f" (Enum: {enum_str})"
+            description += f"<br>(Enum: {enum_str})"
         else:
             description = f"Enum: {enum_str}"
     return description
 
 def process_explode_param(param, description='-'):
-    """explode 파라미터를 처리하여 설명에 추가합니다."""
+    """explode 파라미터를 처리하여 설명에 개행과 함께 추가합니다."""
     if 'explode' in param:
         explode_value = param['explode']
         explode_str = f"explode: {str(explode_value).lower()}"
         if description != '-':
-            description += f" ({explode_str})"
+            description += f"<br>({explode_str})"
         else:
             description = explode_str
     return description
 
 def process_array_param(schema, description='-'):
-    """배열 파라미터의 항목에 있는 enum 값을 처리합니다."""
+    """배열 파라미터의 항목에 있는 enum 값을 처리하여 개행과 함께 추가합니다."""
     if schema.get('type') == 'array' and 'items' in schema:
         items = schema['items']
         if 'enum' in items:
             enum_values = items['enum']
             enum_str = ', '.join([f"`{val}`" for val in enum_values])
             if description != '-':
-                description += f" (Array items: {enum_str})"
+                description += f"<br>(Array items: {enum_str})"
             else:
                 description = f"Array items: {enum_str}"
     return description
@@ -512,7 +511,7 @@ def process_parameters(parameters, markdown, spec):
         
         for param in params:
             name = param.get('name', 'unknown')
-            required = "✓" if param.get('required', False) else ""
+            required = "true" if param.get('required', False) else "false"
             description = escape_markdown(param.get('description', '-'))
             
             description = process_explode_param(param, description)
