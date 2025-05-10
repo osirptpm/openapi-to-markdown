@@ -61,7 +61,7 @@ Update an existing pet by Id.
 **인증 요구사항:**
 
 - petstore_auth
-  - 스코프: write:pets, read:pets
+  - 접근 권한: write:pets, read:pets
 
 
 #### 요청
@@ -89,9 +89,6 @@ Update an existent pet in the store
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -114,11 +111,7 @@ Update an existent pet in the store
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <pet>
@@ -142,11 +135,7 @@ Update an existent pet in the store
 </pet>
 ```
 
-
 **Content Type**: application/x-www-form-urlencoded
-
-
-**예시:**
 
 ```http
 id=10
@@ -159,7 +148,6 @@ tags[0].id=0
 tags[0].name=example_name
 status=example_status
 ```
-
 
 
 #### 응답
@@ -187,9 +175,6 @@ status=example_status
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -212,11 +197,7 @@ status=example_status
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <pet>
@@ -239,7 +220,6 @@ status=example_status
   <status>example_status</status>
 </pet>
 ```
-
 
 **상태 코드**: `400`
 
@@ -270,16 +250,12 @@ status=example_status
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -294,7 +270,7 @@ Add a new pet to the store.
 **인증 요구사항:**
 
 - petstore_auth
-  - 스코프: write:pets, read:pets
+  - 접근 권한: write:pets, read:pets
 
 
 #### 요청
@@ -322,9 +298,6 @@ Create a new pet in the store
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -347,11 +320,7 @@ Create a new pet in the store
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <pet>
@@ -375,11 +344,7 @@ Create a new pet in the store
 </pet>
 ```
 
-
 **Content Type**: application/x-www-form-urlencoded
-
-
-**예시:**
 
 ```http
 id=10
@@ -392,7 +357,6 @@ tags[0].id=0
 tags[0].name=example_name
 status=example_status
 ```
-
 
 
 #### 응답
@@ -420,9 +384,6 @@ status=example_status
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -445,11 +406,7 @@ status=example_status
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <pet>
@@ -472,7 +429,6 @@ status=example_status
   <status>example_status</status>
 </pet>
 ```
-
 
 **상태 코드**: `400`
 
@@ -498,16 +454,12 @@ status=example_status
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -522,7 +474,7 @@ Multiple status values can be provided with comma separated strings.
 **인증 요구사항:**
 
 - petstore_auth
-  - 스코프: write:pets, read:pets
+  - 접근 권한: write:pets, read:pets
 
 
 #### 요청
@@ -535,7 +487,7 @@ Multiple status values can be provided with comma separated strings.
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `status` | string |  | Status values that need to be considered for filter |
+| `status` | string |  | Status values that need to be considered for filter (explode: true) (Enum: `available`, `pending`, `sold`) |
 
 
 
@@ -550,12 +502,27 @@ Multiple status values can be provided with comma separated strings.
 
 ##### 응답 스키마
 
-속성이 정의되지 않았습니다.
+**응답 형식**: 배열
+
+
+**이 응답은 아래 스키마의 배열 형태로 반환됩니다.**
+
+배열 아이템 스키마
+
+| 이름 | 타입 | 필수 여부 | 설명 |
+|------|------|:--------:|------|
+| `id` | integer |  | \- |
+| `name` | string | ✓ | \- |
+| `category` | object |  | \- |
+| `category.id` | integer |  | \- |
+| `category.name` | string |  | \- |
+| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
+| `tags[]` | array&lt;object&gt; |  | \- |
+| `tags[].id` | integer |  | \- |
+| `tags[].name` | string |  | \- |
+| `status` | string |  | pet status in the store |
 
 **Content Type**: application/json
-
-
-**예시:**
 
 ```json
 [
@@ -581,16 +548,29 @@ Multiple status values can be provided with comma separated strings.
 ]
 ```
 
-
 **Content Type**: application/xml
 
-
-**예시:**
-
 ```xml
-<root>[{'id': 10, 'name': 'doggie', 'category': {'id': 1, 'name': 'Dogs'}, 'photoUrls': ['example_photoUrls_1', 'example_photoUrls_2'], 'tags': [{'id': 0, 'name': 'example_name'}], 'status': 'example_status'}]</root>
+<pet>
+  <id>10</id>
+  <name>doggie</name>
+  <category>
+    <id>1</id>
+    <name>Dogs</name>
+  </category>
+  <photoUrls>
+    <photoUrl>example_photoUrls_1</photoUrl>
+    <photoUrl>example_photoUrls_2</photoUrl>
+  </photoUrls>
+  <tags>
+    <tag>
+      <id>0</id>
+      <name>example_name</name>
+    </tag>
+  </tags>
+  <status>example_status</status>
+</pet>
 ```
-
 
 **상태 코드**: `400`
 
@@ -611,16 +591,12 @@ Multiple status values can be provided with comma separated strings.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -635,7 +611,7 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 **인증 요구사항:**
 
 - petstore_auth
-  - 스코프: write:pets, read:pets
+  - 접근 권한: write:pets, read:pets
 
 
 #### 요청
@@ -648,7 +624,7 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 
 | 이름 | 타입 | 필수 여부 | 설명 |
 |------|------|:--------:|------|
-| `tags` | array&lt;string&gt; |  | Tags to filter by |
+| `tags` | array&lt;string&gt; |  | Tags to filter by (explode: true) |
 
 
 
@@ -663,12 +639,27 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 
 ##### 응답 스키마
 
-속성이 정의되지 않았습니다.
+**응답 형식**: 배열
+
+
+**이 응답은 아래 스키마의 배열 형태로 반환됩니다.**
+
+배열 아이템 스키마
+
+| 이름 | 타입 | 필수 여부 | 설명 |
+|------|------|:--------:|------|
+| `id` | integer |  | \- |
+| `name` | string | ✓ | \- |
+| `category` | object |  | \- |
+| `category.id` | integer |  | \- |
+| `category.name` | string |  | \- |
+| `photoUrls[]` | array&lt;string&gt; | ✓ | \- |
+| `tags[]` | array&lt;object&gt; |  | \- |
+| `tags[].id` | integer |  | \- |
+| `tags[].name` | string |  | \- |
+| `status` | string |  | pet status in the store |
 
 **Content Type**: application/json
-
-
-**예시:**
 
 ```json
 [
@@ -694,16 +685,29 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 ]
 ```
 
-
 **Content Type**: application/xml
 
-
-**예시:**
-
 ```xml
-<root>[{'id': 10, 'name': 'doggie', 'category': {'id': 1, 'name': 'Dogs'}, 'photoUrls': ['example_photoUrls_1', 'example_photoUrls_2'], 'tags': [{'id': 0, 'name': 'example_name'}], 'status': 'example_status'}]</root>
+<pet>
+  <id>10</id>
+  <name>doggie</name>
+  <category>
+    <id>1</id>
+    <name>Dogs</name>
+  </category>
+  <photoUrls>
+    <photoUrl>example_photoUrls_1</photoUrl>
+    <photoUrl>example_photoUrls_2</photoUrl>
+  </photoUrls>
+  <tags>
+    <tag>
+      <id>0</id>
+      <name>example_name</name>
+    </tag>
+  </tags>
+  <status>example_status</status>
+</pet>
 ```
-
 
 **상태 코드**: `400`
 
@@ -724,16 +728,12 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -749,7 +749,7 @@ Returns a single pet.
 
 - api_key
 - petstore_auth
-  - 스코프: write:pets, read:pets
+  - 접근 권한: write:pets, read:pets
 
 
 #### 요청
@@ -792,9 +792,6 @@ Returns a single pet.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -817,11 +814,7 @@ Returns a single pet.
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <pet>
@@ -844,7 +837,6 @@ Returns a single pet.
   <status>example_status</status>
 </pet>
 ```
-
 
 **상태 코드**: `400`
 
@@ -870,16 +862,12 @@ Returns a single pet.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -894,7 +882,7 @@ Updates a pet resource based on the form data.
 **인증 요구사항:**
 
 - petstore_auth
-  - 스코프: write:pets, read:pets
+  - 접근 권한: write:pets, read:pets
 
 
 #### 요청
@@ -944,9 +932,6 @@ Updates a pet resource based on the form data.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -969,11 +954,7 @@ Updates a pet resource based on the form data.
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <pet>
@@ -997,7 +978,6 @@ Updates a pet resource based on the form data.
 </pet>
 ```
 
-
 **상태 코드**: `400`
 
 **설명**: Invalid input
@@ -1017,16 +997,12 @@ Updates a pet resource based on the form data.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -1041,7 +1017,7 @@ Delete a pet.
 **인증 요구사항:**
 
 - petstore_auth
-  - 스코프: write:pets, read:pets
+  - 접근 권한: write:pets, read:pets
 
 
 #### 요청
@@ -1092,16 +1068,12 @@ Delete a pet.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -1116,7 +1088,7 @@ Upload image of the pet.
 **인증 요구사항:**
 
 - petstore_auth
-  - 스코프: write:pets, read:pets
+  - 접근 권한: write:pets, read:pets
 
 
 #### 요청
@@ -1144,9 +1116,13 @@ Upload image of the pet.
 
 ##### 요청 본문 스키마
 
-속성이 정의되지 않았습니다.
+**타입**: string
+
+**포맷**: binary
+
 
 **Content Type**: application/octet-stream
+
 
 
 
@@ -1168,9 +1144,6 @@ Upload image of the pet.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": 0,
@@ -1178,7 +1151,6 @@ Upload image of the pet.
   "message": "example_message"
 }
 ```
-
 
 **상태 코드**: `400`
 
@@ -1204,16 +1176,12 @@ Upload image of the pet.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -1248,9 +1216,11 @@ Returns a map of status codes to quantities.
 
 ##### 응답 스키마
 
-속성이 정의되지 않았습니다.
+**타입**: object
+
 
 **Content Type**: application/json
+
 
 
 **상태 코드**: `default`
@@ -1267,16 +1237,12 @@ Returns a map of status codes to quantities.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -1306,9 +1272,6 @@ Place a new order in the store.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -1320,11 +1283,7 @@ Place a new order in the store.
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <order>
@@ -1337,11 +1296,7 @@ Place a new order in the store.
 </order>
 ```
 
-
 **Content Type**: application/x-www-form-urlencoded
-
-
-**예시:**
 
 ```http
 id=10
@@ -1351,7 +1306,6 @@ shipDate=example_shipDate
 status=approved
 complete=False
 ```
-
 
 
 #### 응답
@@ -1375,9 +1329,6 @@ complete=False
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -1388,7 +1339,6 @@ complete=False
   "complete": false
 }
 ```
-
 
 **상태 코드**: `400`
 
@@ -1414,16 +1364,12 @@ complete=False
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -1470,9 +1416,6 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -1484,11 +1427,7 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <order>
@@ -1500,7 +1439,6 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
   <complete>False</complete>
 </order>
 ```
-
 
 **상태 코드**: `400`
 
@@ -1526,16 +1464,12 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -1593,16 +1527,12 @@ For valid response try integer IDs with value < 1000. Anything above 1000 or non
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -1640,9 +1570,6 @@ Created user object
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -1656,11 +1583,7 @@ Created user object
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <user>
@@ -1675,11 +1598,7 @@ Created user object
 </user>
 ```
 
-
 **Content Type**: application/x-www-form-urlencoded
-
-
-**예시:**
 
 ```http
 id=10
@@ -1691,7 +1610,6 @@ password=12345
 phone=12345
 userStatus=1
 ```
-
 
 
 #### 응답
@@ -1717,9 +1635,6 @@ userStatus=1
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -1733,11 +1648,7 @@ userStatus=1
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <user>
@@ -1751,7 +1662,6 @@ userStatus=1
   <userStatus>1</userStatus>
 </user>
 ```
-
 
 **상태 코드**: `default`
 
@@ -1767,16 +1677,12 @@ userStatus=1
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -1795,12 +1701,25 @@ Creates list of users with given input array.
 
 ##### 요청 본문 스키마
 
-속성이 정의되지 않았습니다.
+**요청 형식**: 배열
+
+
+**이 응답은 아래 스키마의 배열 형태로 반환됩니다.**
+
+배열 아이템 스키마
+
+| 이름 | 타입 | 필수 여부 | 설명 |
+|------|------|:--------:|------|
+| `id` | integer |  | \- |
+| `username` | string |  | \- |
+| `firstName` | string |  | \- |
+| `lastName` | string |  | \- |
+| `email` | string |  | \- |
+| `password` | string |  | \- |
+| `phone` | string |  | \- |
+| `userStatus` | integer |  | User Status |
 
 **Content Type**: application/json
-
-
-**예시:**
 
 ```json
 [
@@ -1816,7 +1735,6 @@ Creates list of users with given input array.
   }
 ]
 ```
-
 
 
 #### 응답
@@ -1842,9 +1760,6 @@ Creates list of users with given input array.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -1858,11 +1773,7 @@ Creates list of users with given input array.
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <user>
@@ -1876,7 +1787,6 @@ Creates list of users with given input array.
   <userStatus>1</userStatus>
 </user>
 ```
-
 
 **상태 코드**: `default`
 
@@ -1892,16 +1802,12 @@ Creates list of users with given input array.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -1938,12 +1844,15 @@ Log into the system.
 
 ##### 응답 스키마
 
-속성이 정의되지 않았습니다.
+**타입**: string
+
 
 **Content Type**: application/xml
 
 
+
 **Content Type**: application/json
+
 
 
 **상태 코드**: `400`
@@ -1965,16 +1874,12 @@ Log into the system.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -1986,11 +1891,6 @@ Log into the system.
 Log user out of the system.
 
 #### 요청
-
-
-**파라미터:**
-
-
 
 
 
@@ -2016,16 +1916,12 @@ Log user out of the system.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -2074,9 +1970,6 @@ Get user detail based on username.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -2090,11 +1983,7 @@ Get user detail based on username.
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <user>
@@ -2108,7 +1997,6 @@ Get user detail based on username.
   <userStatus>1</userStatus>
 </user>
 ```
-
 
 **상태 코드**: `400`
 
@@ -2134,16 +2022,12 @@ Get user detail based on username.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -2188,9 +2072,6 @@ Update an existent user in the store
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "id": 10,
@@ -2204,11 +2085,7 @@ Update an existent user in the store
 }
 ```
 
-
 **Content Type**: application/xml
-
-
-**예시:**
 
 ```xml
 <user>
@@ -2223,11 +2100,7 @@ Update an existent user in the store
 </user>
 ```
 
-
 **Content Type**: application/x-www-form-urlencoded
-
-
-**예시:**
 
 ```http
 id=10
@@ -2239,7 +2112,6 @@ password=12345
 phone=12345
 userStatus=1
 ```
-
 
 
 #### 응답
@@ -2274,16 +2146,12 @@ userStatus=1
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
@@ -2341,16 +2209,12 @@ This can only be done by the logged in user.
 
 **Content Type**: application/json
 
-
-**예시:**
-
 ```json
 {
   "code": "example_code",
   "message": "example_message"
 }
 ```
-
 
 
 ---
