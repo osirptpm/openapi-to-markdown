@@ -11,8 +11,8 @@ OpenAPI 스펙 문서를 마크다운 형식으로 변환하는 스크립트입�
 import yaml
 import copy
 import json
-import re
-import os
+import argparse
+import os.path
 
 def load_openapi_spec(file_path):
     """OpenAPI 명세를 YAML 파일에서 로드합니다."""
@@ -756,18 +756,102 @@ def save_markdown(file_path, content):
     with open(file_path, 'w', encoding='utf-8') as file:
         file.write(content)
 
+def process_file(input_file, output_file=None):
+    """단일 OpenAPI 스펙 파일을 처리하여 마크다운으로 변환합니다."""
+    if not os.path.isfile(input_file):
+        print(f"입력 파일이 존재하지 않습니다: {input_file}")
+        return False
+    
+    # 출력 파일 경로 설정
+    if output_file is None:
+        # 입력 파일 경로에서 파일명만 추출하고 확장자를 .md로 변경
+        input_dir = os.path.dirname(input_file)
+        input_filename = os.path.splitext(os.path.basename(input_file))[0]
+        output_file = os.path.join(input_dir, f"{input_filename}.md")
+    
+    try:
+        spec = load_openapi_spec(input_file)
+        markdown_text = generate_markdown(spec)
+        save_markdown(output_file, markdown_text)
+        print(f"Markdown 문서 생성 완료: {output_file}")
+        return True
+    except Exception as e:
+        print(f"파일 처리 중 오류 발생: {input_file} - {str(e)}")
+        return False
+
+def process_directory(input_dir, output_dir=None):
+    """입력 디렉토리 내의 모든 YAML 파일을 재귀적으로 처리합니다."""
+    if not os.path.isdir(input_dir):
+        print(f"입력 디렉토리가 존재하지 않습니다: {input_dir}")
+        return
+
+    processed_count = 0
+    error_count = 0
+    
+    for root, _, files in os.walk(input_dir):
+        for file in files:
+            # YAML 파일 필터링
+            if file.endswith(('.yaml', '.yml')):
+                input_file = os.path.join(root, file)
+                
+                # 출력 디렉토리가 설정된 경우
+                if output_dir:
+                    # 원본 파일의 상대 경로 구조를 유지
+                    rel_path = os.path.relpath(root, input_dir)
+                    # 출력 디렉토리 내에 상대 경로 구조 생성
+                    target_dir = os.path.join(output_dir, rel_path)
+                    
+                    # 필요한 디렉토리 생성
+                    os.makedirs(target_dir, exist_ok=True)
+                    
+                    # 출력 파일 경로 설정 (.md 확장자)
+                    output_file = os.path.join(target_dir, os.path.splitext(file)[0] + '.md')
+                else:
+                    # 출력 디렉토리가 없으면 원본 위치에 생성
+                    output_file = os.path.join(root, os.path.splitext(file)[0] + '.md')
+                
+                # 파일 처리
+                success = process_file(input_file, output_file)
+                if success:
+                    processed_count += 1
+                else:
+                    error_count += 1
+    
+    print(f"\n처리 완료: {processed_count}개 파일 변환 성공, {error_count}개 파일 처리 실패")
+
 def main():
     """메인 함수: OpenAPI 스펙을 로드하고 마크다운 문서를 생성합니다."""
-    input_file = 'swagger.yaml'
-    output_file = 'markdown.md'
+    parser = argparse.ArgumentParser(description="OpenAPI 스펙을 마크다운 문서로 변환합니다.")
     
-    spec = load_openapi_spec(input_file)
+    # 파일 또는 디렉토리 입력 모드를 위한 인자 그룹
+    input_group = parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument("-f", "--file", dest="input_file", 
+                          help="OpenAPI 스펙 파일 경로 (YAML 형식)")
+    input_group.add_argument("-d", "--directory", dest="input_dir", 
+                          help="OpenAPI 스펙 파일이 포함된 디렉토리 경로 (하위 디렉토리 포함 모든 YAML 파일 처리)")
     
-    markdown_text = generate_markdown(spec)
+    # 출력 옵션
+    output_group = parser.add_mutually_exclusive_group()
+    output_group.add_argument("-o", "--output", dest="output_file", 
+                           help="생성된 마크다운 파일 경로 (--file 옵션과 함께 사용)")
+    output_group.add_argument("-od", "--output-directory", dest="output_dir", 
+                           help="생성된 마크다운 파일을 저장할 디렉토리 경로 (--directory 옵션과 함께 사용)")
     
-    save_markdown(output_file, markdown_text)
-    
-    print(f"Markdown documentation generated: {output_file}")
+    args = parser.parse_args()
+
+    # 파일 모드와 디렉토리 모드 구분하여 처리
+    if args.input_file:
+        # 단일 파일 처리 모드
+        if args.output_dir:
+            parser.error("--output-directory 옵션은 --directory 옵션과 함께 사용해야 합니다.")
+        
+        process_file(args.input_file, args.output_file)
+    else:
+        # 디렉토리 처리 모드
+        if args.output_file:
+            parser.error("--output 옵션은 --file 옵션과 함께 사용해야 합니다.")
+        
+        process_directory(args.input_dir, args.output_dir)
 
 if __name__ == "__main__":
     main()
