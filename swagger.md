@@ -87,7 +87,7 @@ Update an existent pet in the store
 | `tags[]` | array&lt;object&gt; | false | \- |
 | `tags[].id` | integer | false | \- |
 | `tags[].name` | string | false | \- |
-| `status` | string | false | pet status in the store |
+| `status` | string | false | pet status in the store<br>(Enum: `available`, `pending`, `sold`) |
 
 **Content Type**: application/json
 
@@ -173,7 +173,7 @@ status=example_status
 | `tags[]` | array&lt;object&gt; | false | \- |
 | `tags[].id` | integer | false | \- |
 | `tags[].name` | string | false | \- |
-| `status` | string | false | pet status in the store |
+| `status` | string | false | pet status in the store<br>(Enum: `available`, `pending`, `sold`) |
 
 **Content Type**: application/json
 
@@ -298,7 +298,7 @@ Create a new pet in the store
 | `tags[]` | array&lt;object&gt; | false | \- |
 | `tags[].id` | integer | false | \- |
 | `tags[].name` | string | false | \- |
-| `status` | string | false | pet status in the store |
+| `status` | string | false | pet status in the store<br>(Enum: `available`, `pending`, `sold`) |
 
 **Content Type**: application/json
 
@@ -384,7 +384,7 @@ status=example_status
 | `tags[]` | array&lt;object&gt; | false | \- |
 | `tags[].id` | integer | false | \- |
 | `tags[].name` | string | false | \- |
-| `status` | string | false | pet status in the store |
+| `status` | string | false | pet status in the store<br>(Enum: `available`, `pending`, `sold`) |
 
 **Content Type**: application/json
 
@@ -526,7 +526,7 @@ Multiple status values can be provided with comma separated strings.
 | `tags[]` | array&lt;object&gt; | false | \- |
 | `tags[].id` | integer | false | \- |
 | `tags[].name` | string | false | \- |
-| `status` | string | false | pet status in the store |
+| `status` | string | false | pet status in the store<br>(Enum: `available`, `pending`, `sold`) |
 
 **Content Type**: application/json
 
@@ -665,7 +665,7 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 | `tags[]` | array&lt;object&gt; | false | \- |
 | `tags[].id` | integer | false | \- |
 | `tags[].name` | string | false | \- |
-| `status` | string | false | pet status in the store |
+| `status` | string | false | pet status in the store<br>(Enum: `available`, `pending`, `sold`) |
 
 **Content Type**: application/json
 
@@ -798,7 +798,7 @@ Returns a single pet.
 | `tags[]` | array&lt;object&gt; | false | \- |
 | `tags[].id` | integer | false | \- |
 | `tags[].name` | string | false | \- |
-| `status` | string | false | pet status in the store |
+| `status` | string | false | pet status in the store<br>(Enum: `available`, `pending`, `sold`) |
 
 **Content Type**: application/json
 
@@ -940,7 +940,7 @@ Updates a pet resource based on the form data.
 | `tags[]` | array&lt;object&gt; | false | \- |
 | `tags[].id` | integer | false | \- |
 | `tags[].name` | string | false | \- |
-| `status` | string | false | pet status in the store |
+| `status` | string | false | pet status in the store<br>(Enum: `available`, `pending`, `sold`) |
 
 **Content Type**: application/json
 
@@ -1287,7 +1287,7 @@ Place a new order in the store.
 | `petId` | integer | false | \- |
 | `quantity` | integer | false | \- |
 | `shipDate` | string | false | \- |
-| `status` | string | false | Order Status |
+| `status` | string | false | Order Status<br>(Enum: `placed`, `approved`, `delivered`) |
 | `complete` | boolean | false | \- |
 
 **Content Type**: application/json
@@ -1344,7 +1344,7 @@ complete=False
 | `petId` | integer | false | \- |
 | `quantity` | integer | false | \- |
 | `shipDate` | string | false | \- |
-| `status` | string | false | Order Status |
+| `status` | string | false | Order Status<br>(Enum: `placed`, `approved`, `delivered`) |
 | `complete` | boolean | false | \- |
 
 **Content Type**: application/json
@@ -1433,7 +1433,7 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
 | `petId` | integer | false | \- |
 | `quantity` | integer | false | \- |
 | `shipDate` | string | false | \- |
-| `status` | string | false | Order Status |
+| `status` | string | false | Order Status<br>(Enum: `placed`, `approved`, `delivered`) |
 | `complete` | boolean | false | \- |
 
 **Content Type**: application/json
@@ -2270,7 +2270,7 @@ API에서 사용되는 데이터 모델 스키마입니다.
 | `petId` | integer | false | \- |
 | `quantity` | integer | false | \- |
 | `shipDate` | string | false | \- |
-| `status` | string | false | Order Status |
+| `status` | string | false | Order Status<br>(Enum: `placed`, `approved`, `delivered`) |
 | `complete` | boolean | false | \- |
 
 
@@ -2437,7 +2437,7 @@ API에서 사용되는 데이터 모델 스키마입니다.
 | `category` | - | false | \- |
 | `photoUrls[]` | array&lt;string&gt; | true | \- |
 | `tags[]` | array&lt;-&gt; | false | \- |
-| `status` | string | false | pet status in the store |
+| `status` | string | false | pet status in the store<br>(Enum: `available`, `pending`, `sold`) |
 
 
 

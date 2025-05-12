@@ -95,6 +95,10 @@ def format_schema_as_table(schema, title=None):
             type_info += f"\n**포맷**: {schema['format']}\n"
         if 'description' in schema:
             type_info += f"\n**설명**: {schema['description']}\n"
+        if 'enum' in schema:
+            enum_values = schema['enum']
+            enum_str = ', '.join([f"`{val}`" for val in enum_values])
+            type_info += f"\n**가능한 값**: {enum_str}\n"
         return type_info
 
     table = []
@@ -107,7 +111,7 @@ def format_schema_as_table(schema, title=None):
     flat_fields = []
     required_props = schema.get('required', [])
     
-    def collect_fields(properties, prefix="", is_required=False, parent_required=False):
+    def collect_fields(properties, prefix="", is_required=False, parent_required=False, parent_required_fields=None):
         for prop_name, prop in properties.items():
             if not isinstance(prop, dict):
                 continue
@@ -115,10 +119,22 @@ def format_schema_as_table(schema, title=None):
             field_name = f"{prefix}{prop_name}"
             prop_type = prop.get('type', '-')
             prop_desc = escape_markdown(prop.get('description', '-'))
-            field_required = prop_name in required_props or is_required
+            
+            # 필수 필드 여부 확인
+            field_required = prop_name in (parent_required_fields or required_props) or is_required
             field_required = field_required or parent_required
+                
             required_mark = "true" if field_required else "false"
             
+            # enum 값 처리 (스키마 항목에 enum이 있으면 설명에 추가)
+            if 'enum' in prop:
+                enum_values = prop['enum']
+                enum_str = ', '.join([f"`{val}`" for val in enum_values])
+                if prop_desc != '-':
+                    prop_desc += f"<br>(Enum: {enum_str})"
+                else:
+                    prop_desc = f"Enum: {enum_str}"
+                    
             if prop_type == 'array' and 'items' in prop:
                 items = prop['items']
                 if isinstance(items, dict):
@@ -131,14 +147,25 @@ def format_schema_as_table(schema, title=None):
                             "desc": prop_desc
                         })
                         if 'properties' in items:
+                            items_required_props = items.get('required', [])
                             for sub_name, sub_prop in items['properties'].items():
                                 sub_type = sub_prop.get('type', '-')
                                 sub_desc = escape_markdown(sub_prop.get('description', '-'))
-                                sub_required = sub_name in items.get('required', [])
+                                sub_required = sub_name in items_required_props
+                                
+                                # enum 값이 있으면 설명에 추가
+                                if 'enum' in sub_prop:
+                                    enum_values = sub_prop['enum']
+                                    enum_str = ', '.join([f"`{val}`" for val in enum_values])
+                                    if sub_desc != '-':
+                                        sub_desc += f"<br>(Enum: {enum_str})"
+                                    else:
+                                        sub_desc = f"Enum: {enum_str}"
+                                
                                 flat_fields.append({
                                     "name": f"`{field_name}[].{sub_name}`",
                                     "type": sub_type,
-                                    "required": "true" if sub_required or field_required else "false",
+                                    "required": "true" if sub_required else "false", # 중첩 객체의 경우 객체 자체의 required 리스트만 고려
                                     "desc": sub_desc
                                 })
                     else:
@@ -155,15 +182,27 @@ def format_schema_as_table(schema, title=None):
                     "required": required_mark,
                     "desc": prop_desc
                 })
+                # 객체 내부 속성의 required 필드 처리
                 sub_required_props = prop.get('required', [])
                 for sub_name, sub_prop in prop['properties'].items():
                     sub_type = sub_prop.get('type', '-')
                     sub_desc = escape_markdown(sub_prop.get('description', '-'))
+                    # 객체 자체의 required 리스트에 속성이 있는지 확인
                     sub_required = sub_name in sub_required_props
+                    
+                    # enum 값이 있으면 설명에 추가
+                    if 'enum' in sub_prop:
+                        enum_values = sub_prop['enum']
+                        enum_str = ', '.join([f"`{val}`" for val in enum_values])
+                        if sub_desc != '-':
+                            sub_desc += f"<br>(Enum: {enum_str})"
+                        else:
+                            sub_desc = f"Enum: {enum_str}"
+                    
                     flat_fields.append({
                         "name": f"`{field_name}.{sub_name}`",
                         "type": sub_type,
-                        "required": "true" if sub_required or field_required else "false",
+                        "required": "true" if sub_required else "false", # 객체 자체의 required 속성만 참조
                         "desc": sub_desc
                     })
             else:
@@ -549,6 +588,7 @@ def process_request_body(request_body, markdown, spec):
         schema_displayed = False
         schema_info = {}
         
+        # 스키마 정보 저장 (필수 필드는 스키마 테이블에 표시될 것이므로 별도 표시 제거)
         for content_type, content_details in request_body['content'].items():
             schema = content_details.get('schema')
             if schema and not schema_displayed:
@@ -569,7 +609,12 @@ def process_request_body(request_body, markdown, spec):
         
         for content_type, content_details in request_body['content'].items():
             markdown.append(f"\n**Content Type**: {content_type}\n")
-            markdown.append(process_content_examples(content_details, content_details.get('schema'), content_type, spec))
+            # 스키마 자체에 예시가 있으면 먼저 사용
+            schema = content_details.get('schema', {})
+            if schema and 'example' in schema:
+                markdown.append(format_example(schema['example'], schema, content_type, spec))
+            else:
+                markdown.append(process_content_examples(content_details, schema, content_type, spec))
 
 def process_response(status, response, markdown, spec):
     """응답을 처리합니다."""
@@ -600,7 +645,13 @@ def process_response(status, response, markdown, spec):
         
         for content_type, content_details in response['content'].items():
             markdown.append(f"\n**Content Type**: {content_type}\n")
-            markdown.append(process_content_examples(content_details, content_details.get('schema'), content_type, spec))
+            
+            # 스키마 자체에 예시가 있으면 먼저 사용
+            schema = content_details.get('schema', {})
+            if schema and 'example' in schema:
+                markdown.append(format_example(schema['example'], schema, content_type, spec))
+            else:
+                markdown.append(process_content_examples(content_details, schema, content_type, spec))
 
 def process_schema_example(schema_name, schema, markdown, spec):
     """스키마에 대한 예시를 생성하여 처리합니다."""
