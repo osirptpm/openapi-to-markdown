@@ -232,14 +232,13 @@ components:
 
 ### User 사용자 관련 API
 
-- [GET /users](#get--users) - 사용자 목록 조회
-
+- [GET /users](#get-users) - 사용자 목록 조회
 
 ## User
 
 사용자 관련 API
 
-<h3 id='get--users'></h3>
+<h3 id='get-users'></h3>
 
 ### GET /users
 
@@ -248,7 +247,6 @@ components:
 No description provided
 
 #### 요청
-
 
 
 #### 응답
@@ -273,16 +271,21 @@ No description provided
 | `id` | integer | false | 사용자 ID |
 | `name` | string | false | 사용자 이름 |
 
+
 **Content Type**: application/json
+
+
+**예시:**
 
 ```json
 [
   {
     "id": 0,
-    "name": "example_name"
+    "name": "example_value"
   }
 ]
 ```
+
 
 
 ---
@@ -300,16 +303,13 @@ API에서 사용되는 데이터 모델 스키마입니다.
 | `name` | string | false | 사용자 이름 |
 
 
-
 **예시:**
 
 ```json
-
 {
   "id": 0,
-  "name": "example_name"
+  "name": "example_value"
 }
-
 ```
 ````
 
