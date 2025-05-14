@@ -1,6 +1,9 @@
-# OpenAPI to Markdown Converter
+# OpenAPI to Markdown 변환기
 
-OpenAPI/Swagger 스펙 문서를 마크다운 형식으로 변환하는 파이썬 스크립트입니다. 이 프로젝트는 Vibe Coding 방식으로 작성되었습니다.
+OpenAPI/Swagger 스펙 문서를 마크다운 형식으로 변환하는 파이썬 도구입니다. 모듈화된 구조로 설계되어 확장성과 유지보수성을 향상시켰습니다.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)
 
 ## 기능
 
@@ -10,44 +13,84 @@ OpenAPI/Swagger 스펙 문서를 마크다운 형식으로 변환하는 파이�
 - 단일 파일 및 디렉토리 내 모든 YAML 파일 일괄 처리 지원
 - 출력 파일 위치 사용자 지정 가능
 
-**참고**: 현재 버전에서는 YAML 파일만 지원하며, JSON 형식의 OpenAPI 스펙은 직접 지원하지 않습니다. JSON 파일을 처리하려면 먼저 YAML로 변환해야 합니다.
+**참고**: 현재 버전에서는 YAML 파일만 지원하며, JSON 형식의 OpenAPI 스펙은 직접 지원하지 않습니다.
 
-## 설치 및 요구사항
+## 설치 방법
 
-이 스크립트를 실행하기 위해서는 Python 3.6 이상과 다음 패키지가 필요합니다:
+### pip를 이용한 설치
 
 ```bash
-pip install pyyaml
+pip install openapi-to-markdown
 ```
 
-## 사용법
+### 소스 코드를 이용한 설치
 
-### 기본 사용법
+```bash
+git clone https://github.com/your-username/openapi-to-markdown.git
+cd openapi-to-markdown/sources/openapi-to-markdown
+pip install -e .
+```
+
+## 요구사항
+
+- Python 3.6 이상
+- PyYAML 5.1 이상
+
+## 사용 방법
+
+### 명령줄 인터페이스 (CLI)
+
+#### 기본 사용법
 
 단일 파일 변환:
 
 ```bash
-python openapi_to_markdown.py -f path/to/openapi.yaml
+openapi-to-markdown -f path/to/openapi.yaml
 ```
 
 출력 파일을 지정하여 변환:
 
 ```bash
-python openapi_to_markdown.py -f path/to/openapi.yaml -o path/to/output.md
+openapi-to-markdown -f path/to/openapi.yaml -o path/to/output.md
 ```
 
-### 디렉토리 일괄 처리
+#### 디렉토리 일괄 처리
 
 디렉토리 내 모든 YAML 파일을 변환:
 
 ```bash
-python openapi_to_markdown.py -d path/to/directory
+openapi-to-markdown -d path/to/directory
 ```
 
 출력 디렉토리를 지정하여 변환:
 
 ```bash
-python openapi_to_markdown.py -d path/to/directory -od path/to/output_directory
+openapi-to-markdown -d path/to/directory -od path/to/output_directory
+```
+
+### 파이썬 스크립트에서 직접 실행
+
+```python
+from openapi_to_markdown.core.spec_loader import OpenApiSpecLoader
+from openapi_to_markdown.core.reference_resolver import ReferenceResolver
+from openapi_to_markdown.generators.markdown_generator import MarkdownGenerator
+from openapi_to_markdown.utils.file_utils import FileUtils
+
+# 스펙 로드
+spec_loader = OpenApiSpecLoader()
+spec = spec_loader.load_spec("path/to/openapi.yaml")
+
+# 참조 해결
+resolver = ReferenceResolver()
+resolved_spec = resolver.resolve_all_refs(spec)
+
+# 마크다운 생성
+markdown_generator = MarkdownGenerator()
+markdown = markdown_generator.generate(resolved_spec)
+
+# 파일 저장
+file_utils = FileUtils()
+file_utils.save_markdown(markdown, "output.md")
 ```
 
 ## 명령줄 옵션
@@ -58,6 +101,32 @@ python openapi_to_markdown.py -d path/to/directory -od path/to/output_directory
 | `-d`, `--directory` | OpenAPI 스펙 파일이 포함된 디렉토리 경로 (하위 디렉토리의 모든 YAML 파일 처리) |
 | `-o`, `--output` | 생성된 마크다운 파일 경로 (`--file` 옵션과 함께 사용) |
 | `-od`, `--output-directory` | 생성된 마크다운 파일을 저장할 디렉토리 경로 (`--directory` 옵션과 함께 사용) |
+
+### 명령줄 사용 예시
+
+**단일 파일 변환 (기본 출력 파일):**
+```bash
+# input.yaml을 input.md로 변환
+openapi-to-markdown -f path/to/input.yaml
+```
+
+**단일 파일 변환 (사용자 지정 출력 파일):**
+```bash
+# input.yaml을 custom_output.md로 변환
+openapi-to-markdown -f path/to/input.yaml -o path/to/custom_output.md
+```
+
+**디렉토리 처리 (기본 출력 디렉토리):**
+```bash
+# docs 디렉토리 내의 모든 YAML을 원본 디렉토리에 저장
+openapi-to-markdown -d path/to/docs
+```
+
+**디렉토리 처리 (사용자 지정 출력 디렉토리):**
+```bash
+# docs 디렉토리 내의 모든 YAML을 markdown 디렉토리에 저장
+openapi-to-markdown -d path/to/docs -od path/to/markdown
+```
 
 ## 출력 형식
 
@@ -73,9 +142,47 @@ python openapi_to_markdown.py -d path/to/directory -od path/to/output_directory
    - 응답 스키마 및 예시
 6. 데이터 모델 스키마
 
-## 예시
+## 개발자 가이드
 
-OpenAPI 스펙 파일:
+### 프로젝트 구조
+
+```
+openapi_to_markdown/
+├── __init__.py
+├── cli.py                  # 명령줄 인터페이스
+├── core/                   # 핵심 기능
+│   ├── __init__.py
+│   ├── reference_resolver.py  # 참조 해결 
+│   └── spec_loader.py      # 스펙 로드
+├── generators/             # 생성 관련 모듈
+│   ├── __init__.py
+│   ├── example_generator.py  # 예시 생성
+│   ├── form_example.py     # form-data 예시 생성
+│   ├── json_example.py     # JSON 예시 생성
+│   ├── markdown_generator.py  # 마크다운 생성
+│   └── xml_example.py      # XML 예시 생성
+├── processors/             # 데이터 처리 모듈
+│   ├── __init__.py
+│   ├── parameter_processor.py  # 파라미터 처리
+│   ├── request_processor.py    # 요청 처리
+│   ├── response_processor.py   # 응답 처리
+│   └── schema_processor.py     # 스키마 처리
+└── utils/                  # 유틸리티 모듈
+    ├── __init__.py
+    ├── file_utils.py       # 파일 처리
+    └── markdown_utils.py   # 마크다운 유틸리티
+```
+
+### 핵심 모듈 설명
+
+#### 1. 코어 모듈
+
+- **spec_loader.py**: OpenAPI 스펙 파일을 로드하고 기본 유효성을 검증합니다.
+- **reference_resolver.py**: 스펙 내의 참조(`$ref`)를 해결하고 완전한 객체로 변환합니다.
+
+### 예제 입력 및 출력
+
+예를 들어, 다음과 같은 간단한 OpenAPI 스펙 YAML 파일이 있다고 가정해 보겠습니다:
 
 ```yaml
 openapi: 3.0.0
@@ -206,52 +313,29 @@ API에서 사용되는 데이터 모델 스키마입니다.
 ```
 ````
 
-## 코드 구조
+#### 2. 제너레이터 모듈
 
-프로젝트의 주요 함수는 다음과 같습니다:
+- **markdown_generator.py**: 전체 마크다운 문서를 생성하는 메인 생성기입니다.
+- **example_generator.py**: 스키마에서 예시 데이터를 생성하는 기본 클래스입니다.
+- **json_example.py**: JSON 형식의 예시를 생성합니다.
+- **xml_example.py**: XML 형식의 예시를 생성합니다.
+- **form_example.py**: form-data 형식의 예시를 생성합니다.
 
-### 핵심 기능 함수
-- `load_openapi_spec(file_path)`: YAML 파일에서 OpenAPI 스펙을 로드
-- `resolve_schema_ref(ref, spec)`: $ref 참조를 통해 실제 스키마 객체 검색
-- `convert_refs(spec)`: 전체 스펙의 모든 $ref 참조를 실제 객체로 변환
-- `format_schema_as_table(schema, title, spec)`: 스키마를 마크다운 테이블로 변환
-- `generate_markdown(spec)`: 전체 마크다운 문서 생성
+#### 3. 프로세서 모듈
 
-### 데이터 변환 함수
-- `dict_to_form(d, parent_key)`: 사전 형식의 데이터를 form-data 문자열로 변환
-- `dict_to_xml_example(data, schema, spec, root_name, indent)`: 사전 형식의 데이터를 XML로 변환
-- `generate_example_from_schema(schema, spec)`: 스키마 정의에서 예시 데이터 생성
-- `format_example(example, schema, content_type, spec)`: 컨텐츠 타입에 맞게 예시 데이터 포맷팅
+- **parameter_processor.py**: API 엔드포인트의 파라미터를 처리합니다.
+- **request_processor.py**: API 요청 본문을 처리합니다.
+- **response_processor.py**: API 응답을 처리합니다.
+- **schema_processor.py**: 데이터 스키마를 처리합니다.
 
-### 데이터 처리 함수
-- `process_parameters(parameters, markdown, spec)`: API 엔드포인트 파라미터 처리
-- `process_request_body(request_body, markdown, spec)`: API 요청 본문 처리
-- `process_response(status, response, markdown, spec)`: API 응답 처리
-- `process_enum_values(schema, description)`: enum 값 처리
-- `process_explode_param(param, description)`: explode 파라미터 처리
-- `process_array_param(schema, description)`: 배열 파라미터 처리
+#### 4. 유틸리티 모듈
 
-### 파일 처리 함수
-- `process_file(input_file, output_file)`: 단일 YAML 파일 처리
-- `process_directory(input_dir, output_dir)`: 디렉토리 내 모든 YAML 파일 처리
+- **file_utils.py**: 파일 입출력과 관련된 유틸리티 함수를 제공합니다.
+- **markdown_utils.py**: 마크다운 포맷팅 유틸리티를 제공합니다.
 
-## 알려진 이슈
+### 기여 방법
 
-코드 분석을 통해 발견된 몇 가지 이슈가 있습니다:
-
-1. **구조적 이슈**:
-   - 모놀리식 구조: 모든 코드가 단일 파일에 존재하여 유지보수와 확장이 어려움
-   - 함수간 높은 결합도: 함수들이 서로 밀접하게 결합되어 있어 분리가 어려움
-   - 중복 코드: enum 값 처리, 예시 생성 등에서 중복 코드가 존재함
-   - 너무 큰 함수들: 일부 함수(특히 format_schema_as_table, generate_markdown)가 매우 길고 복잡함
-
-2. **기능적 이슈**:
-   - JSON 형식의 OpenAPI 스펙 파일 직접 지원 부재
-   - 일부 복잡한 스키마 구조에서 참조 해결이 부정확할 수 있음
-
-## 기여하기
-
-이 프로젝트는 오픈소스이며, 기여를 환영합니다. 기여 방법:
+이 프로젝트에 기여하고 싶다면 다음 단계를 따라주세요:
 
 1. 이 저장소를 포크(Fork)합니다.
 2. 새로운 브랜치를 생성합니다 (`git checkout -b feature/amazing-feature`).
@@ -259,20 +343,38 @@ API에서 사용되는 데이터 모델 스키마입니다.
 4. 브랜치를 푸시합니다 (`git push origin feature/amazing-feature`).
 5. Pull Request를 생성합니다.
 
+#### 코딩 스타일
+
+- PEP 8 스타일 가이드를 따릅니다.
+- 함수와 클래스에는 문서화 주석(docstring)을 작성합니다.
+- 코드 변경 시 적절한 테스트를 추가합니다.
+
+### 테스트
+
+테스트를 실행하려면:
+
+```bash
+# 모든 테스트 실행
+python -m unittest discover
+
+# 특정 테스트 실행
+python -m unittest test_converter.py
+```
+
+## 알려진 이슈 및 제한 사항
+
+- JSON 형식의 OpenAPI 스펙 파일 직접 지원 부재
+- 일부 복잡한 스키마 구조에서 참조 해결이 부정확할 수 있음
+- 현재는 OpenAPI 3.0만 지원 (3.1 지원 계획 중)
+
 ## 향후 계획
 
-이 프로젝트는 리팩토링을 통해 다음과 같은 개선을 계획하고 있습니다:
-
-### 구조적 개선
-- 객체지향 아키텍처 도입: 기능별 클래스로 분리
-- 모듈화: 기능별로 파일 분리
-- 테스트 코드 추가: 단위 테스트 및 통합 테스트
-
-### 기능적 개선
 - JSON 형식 OpenAPI 스펙 직접 지원
-- 다양한 마크다운 형식 및 스타일 지원
 - OpenAPI 3.1 지원
+- 다양한 마크다운 스타일 및 테마 지원
+- 추가 유닛 테스트 및 통합 테스트
+- 웹 인터페이스 추가
 
 ## 라이선스
 
-MIT License
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
