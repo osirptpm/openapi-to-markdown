@@ -206,6 +206,73 @@ API에서 사용되는 데이터 모델 스키마입니다.
 ```
 ````
 
+## 코드 구조
+
+프로젝트의 주요 함수는 다음과 같습니다:
+
+### 핵심 기능 함수
+- `load_openapi_spec(file_path)`: YAML 파일에서 OpenAPI 스펙을 로드
+- `resolve_schema_ref(ref, spec)`: $ref 참조를 통해 실제 스키마 객체 검색
+- `convert_refs(spec)`: 전체 스펙의 모든 $ref 참조를 실제 객체로 변환
+- `format_schema_as_table(schema, title, spec)`: 스키마를 마크다운 테이블로 변환
+- `generate_markdown(spec)`: 전체 마크다운 문서 생성
+
+### 데이터 변환 함수
+- `dict_to_form(d, parent_key)`: 사전 형식의 데이터를 form-data 문자열로 변환
+- `dict_to_xml_example(data, schema, spec, root_name, indent)`: 사전 형식의 데이터를 XML로 변환
+- `generate_example_from_schema(schema, spec)`: 스키마 정의에서 예시 데이터 생성
+- `format_example(example, schema, content_type, spec)`: 컨텐츠 타입에 맞게 예시 데이터 포맷팅
+
+### 데이터 처리 함수
+- `process_parameters(parameters, markdown, spec)`: API 엔드포인트 파라미터 처리
+- `process_request_body(request_body, markdown, spec)`: API 요청 본문 처리
+- `process_response(status, response, markdown, spec)`: API 응답 처리
+- `process_enum_values(schema, description)`: enum 값 처리
+- `process_explode_param(param, description)`: explode 파라미터 처리
+- `process_array_param(schema, description)`: 배열 파라미터 처리
+
+### 파일 처리 함수
+- `process_file(input_file, output_file)`: 단일 YAML 파일 처리
+- `process_directory(input_dir, output_dir)`: 디렉토리 내 모든 YAML 파일 처리
+
+## 알려진 이슈
+
+코드 분석을 통해 발견된 몇 가지 이슈가 있습니다:
+
+1. **구조적 이슈**:
+   - 모놀리식 구조: 모든 코드가 단일 파일에 존재하여 유지보수와 확장이 어려움
+   - 함수간 높은 결합도: 함수들이 서로 밀접하게 결합되어 있어 분리가 어려움
+   - 중복 코드: enum 값 처리, 예시 생성 등에서 중복 코드가 존재함
+   - 너무 큰 함수들: 일부 함수(특히 format_schema_as_table, generate_markdown)가 매우 길고 복잡함
+
+2. **기능적 이슈**:
+   - JSON 형식의 OpenAPI 스펙 파일 직접 지원 부재
+   - 일부 복잡한 스키마 구조에서 참조 해결이 부정확할 수 있음
+
+## 기여하기
+
+이 프로젝트는 오픈소스이며, 기여를 환영합니다. 기여 방법:
+
+1. 이 저장소를 포크(Fork)합니다.
+2. 새로운 브랜치를 생성합니다 (`git checkout -b feature/amazing-feature`).
+3. 변경사항을 커밋합니다 (`git commit -m '새로운 기능 추가'`).
+4. 브랜치를 푸시합니다 (`git push origin feature/amazing-feature`).
+5. Pull Request를 생성합니다.
+
+## 향후 계획
+
+이 프로젝트는 리팩토링을 통해 다음과 같은 개선을 계획하고 있습니다:
+
+### 구조적 개선
+- 객체지향 아키텍처 도입: 기능별 클래스로 분리
+- 모듈화: 기능별로 파일 분리
+- 테스트 코드 추가: 단위 테스트 및 통합 테스트
+
+### 기능적 개선
+- JSON 형식 OpenAPI 스펙 직접 지원
+- 다양한 마크다운 형식 및 스타일 지원
+- OpenAPI 3.1 지원
+
 ## 라이선스
 
 MIT License

@@ -78,7 +78,7 @@ def escape_markdown(text):
         text = text.replace(char, '\\' + char)
     return text
 
-def format_schema_as_table(schema, title=None):
+def format_schema_as_table(schema, title=None, spec=None):
     """스키마를 마크다운 테이블로 변환합니다."""
     if not schema or not isinstance(schema, dict):
         return "스키마 정보가 없습니다."
@@ -87,7 +87,18 @@ def format_schema_as_table(schema, title=None):
         array_schema = schema['items']
         array_title = title or "배열 아이템 스키마"
         array_info = f"**이 응답은 아래 스키마의 배열 형태로 반환됩니다.**\n\n"
-        return array_info + format_schema_as_table(array_schema, array_title)
+        
+        # $ref 처리
+        if '$ref' in array_schema and spec:
+            ref_schema = resolve_schema_ref(array_schema['$ref'], spec)
+            if ref_schema:
+                array_schema = ref_schema
+                # 참조된 스키마 이름 추출
+                ref_path = array_schema['$ref'].split('/') if '$ref' in array_schema else []
+                ref_name = ref_path[-1] if ref_path else "Schema"
+                array_title = f"{ref_name} 스키마"
+                
+        return array_info + format_schema_as_table(array_schema, array_title, spec)
     
     if 'properties' not in schema:
         type_info = f"**타입**: {schema.get('type', '알 수 없음')}\n"
@@ -138,8 +149,45 @@ def format_schema_as_table(schema, title=None):
             if prop_type == 'array' and 'items' in prop:
                 items = prop['items']
                 if isinstance(items, dict):
-                    item_type = items.get('type', '-')
-                    if item_type == 'object' or 'properties' in items:
+                    # $ref가 있는 경우 처리
+                    if '$ref' in items and spec:
+                        ref = items['$ref']
+                        ref_parts = ref.split('/')
+                        ref_name = ref_parts[-1] if ref_parts else "object"
+                        ref_schema = resolve_schema_ref(ref, spec)
+                        
+                        flat_fields.append({
+                            "name": f"`{field_name}[]`",
+                            "type": f"array&lt;{ref_name}&gt;",
+                            "required": required_mark,
+                            "desc": prop_desc
+                        })
+                        
+                        # ref_schema가 있고 properties가 있으면 하위 항목도 표시
+                        if ref_schema and 'properties' in ref_schema:
+                            ref_required_props = ref_schema.get('required', [])
+                            for sub_name, sub_prop in ref_schema['properties'].items():
+                                sub_type = sub_prop.get('type', '-')
+                                sub_desc = escape_markdown(sub_prop.get('description', '-'))
+                                sub_required = sub_name in ref_required_props
+                                
+                                # enum 값이 있으면 설명에 추가
+                                if 'enum' in sub_prop:
+                                    enum_values = sub_prop['enum']
+                                    enum_str = ', '.join([f"`{val}`" for val in enum_values])
+                                    if sub_desc != '-':
+                                        sub_desc += f"<br>(Enum: {enum_str})"
+                                    else:
+                                        sub_desc = f"Enum: {enum_str}"
+                                
+                                flat_fields.append({
+                                    "name": f"`{field_name}[].{sub_name}`",
+                                    "type": sub_type,
+                                    "required": "true" if sub_required else "false",
+                                    "desc": sub_desc
+                                })
+                    # 일반 객체 타입인 경우
+                    elif items.get('type') == 'object' or 'properties' in items:
                         flat_fields.append({
                             "name": f"`{field_name}[]`",
                             "type": f"array&lt;object&gt;",
@@ -168,7 +216,9 @@ def format_schema_as_table(schema, title=None):
                                     "required": "true" if sub_required else "false", # 중첩 객체의 경우 객체 자체의 required 리스트만 고려
                                     "desc": sub_desc
                                 })
+                    # 기타 기본 타입인 경우
                     else:
+                        item_type = items.get('type', '-')
                         flat_fields.append({
                             "name": f"`{field_name}[]`",
                             "type": f"array&lt;{item_type}&gt;",
@@ -473,26 +523,28 @@ def format_example(example, schema, content_type, spec=None):
     else:
         return f"```{code_format}\n{yaml.dump(example, sort_keys=False, allow_unicode=True)}\n```"
 
-def process_content_examples(content_details, schema, content_type, spec=None):
-    """컨텐츠 세부 정보에서 예시 데이터를 처리합니다."""
-    result = []
+def format_schema_examples(schema, content_type, spec):
+    """스키마에 정의된 examples 속성을 처리합니다."""
+    if not schema or not isinstance(schema, dict) or 'examples' not in schema:
+        return ""
     
-    example = content_details.get('example')
-    examples = content_details.get('examples')
+    examples_md = []
+    examples_md.append("\n**예시:**\n")
     
-    if not example and not examples and schema:
-        example = generate_example_from_schema(schema, spec)
+    for example_name, example_value in schema['examples'].items():
+        # examples 객체가 value 속성을 가질 경우 해당 값을 사용
+        actual_value = None
+        if isinstance(example_value, dict) and 'value' in example_value:
+            actual_value = example_value['value']
+        else:
+            actual_value = example_value
+            
+        if example_name:
+            examples_md.append(f"\n**{example_name}:**\n")
+        
+        examples_md.append(format_example(actual_value, schema, content_type, spec))
     
-    if examples:
-        for example_name, example_obj in examples.items():
-            example_value = example_obj.get('value')
-            if example_value:
-                result.append(f"\n**{example_name}:**\n")
-                result.append(format_example(example_value, schema, content_type, spec))
-    elif example:
-        result.append(format_example(example, schema, content_type, spec))
-    
-    return "\n".join(result)
+    return "\n".join(examples_md)
 
 def process_enum_values(schema, description='-'):
     """스키마의 enum 값을 처리하여 설명에 개행과 함께 추가합니다."""
@@ -574,6 +626,44 @@ def process_parameters(parameters, markdown, spec):
     
     markdown.append("\n")
 
+def process_content_examples(content_details, schema, content_type, spec=None):
+    """컨텐츠 세부 정보에서 예시 데이터를 처리합니다."""
+    result = []
+    
+    # 1. 스키마 자체에 example이 있는 경우 처리
+    if schema and 'example' in schema:
+        return format_example(schema['example'], schema, content_type, spec)
+    
+    # 2. 스키마 자체에 examples가 있는 경우 처리
+    if schema and 'examples' in schema:
+        return format_schema_examples(schema, content_type, spec)
+    
+    # 3. content 레벨에 examples가 있는 경우 처리
+    example = content_details.get('example')
+    examples = content_details.get('examples')
+    
+    if examples:
+        for example_name, example_obj in examples.items():
+            example_value = None
+            if isinstance(example_obj, dict):
+                example_value = example_obj.get('value')
+            else:
+                example_value = example_obj
+                
+            if example_value:
+                result.append(f"\n**{example_name}:**\n")
+                result.append(format_example(example_value, schema, content_type, spec))
+    # 4. content 레벨에 example이 있는 경우 처리
+    elif example:
+        result.append(format_example(example, schema, content_type, spec))
+    # 5. 예시가 없는 경우 스키마로부터 생성
+    elif schema:
+        example = generate_example_from_schema(schema, spec)
+        if example:
+            result.append(format_example(example, schema, content_type, spec))
+    
+    return "\n".join(result)
+
 def process_request_body(request_body, markdown, spec):
     """요청 본문을 처리합니다."""
     if not request_body:
@@ -605,16 +695,15 @@ def process_request_body(request_body, markdown, spec):
             if schema.get('type') == 'array':
                 markdown.append("**요청 형식**: 배열\n\n")
                 
-            markdown.append(format_schema_as_table(schema_info['schema']))
+            markdown.append(format_schema_as_table(schema_info['schema'], None, spec))
+            
+            # examples 속성 처리
+            if schema and 'examples' in schema:
+                markdown.append(format_schema_examples(schema, schema_info['content_type'], spec))
         
         for content_type, content_details in request_body['content'].items():
             markdown.append(f"\n**Content Type**: {content_type}\n")
-            # 스키마 자체에 예시가 있으면 먼저 사용
-            schema = content_details.get('schema', {})
-            if schema and 'example' in schema:
-                markdown.append(format_example(schema['example'], schema, content_type, spec))
-            else:
-                markdown.append(process_content_examples(content_details, schema, content_type, spec))
+            markdown.append(process_content_examples(content_details, content_details.get('schema', {}), content_type, spec))
 
 def process_response(status, response, markdown, spec):
     """응답을 처리합니다."""
@@ -641,27 +730,54 @@ def process_response(status, response, markdown, spec):
             if schema.get('type') == 'array':
                 markdown.append("**응답 형식**: 배열\n\n")
                 
-            markdown.append(format_schema_as_table(schema_info['schema']))
+            markdown.append(format_schema_as_table(schema_info['schema'], None, spec))
+            
+            # examples 속성 처리
+            if schema and 'examples' in schema:
+                markdown.append(format_schema_examples(schema, schema_info['content_type'], spec))
         
         for content_type, content_details in response['content'].items():
             markdown.append(f"\n**Content Type**: {content_type}\n")
+            markdown.append(process_content_examples(content_details, content_details.get('schema', {}), content_type, spec))
+
+def process_object_property(schema, content_type="application/json", spec=None):
+    """객체 속성을 마크다운 테이블로 변환합니다."""
+    required_props = schema.get('required', [])
+    
+    if 'properties' not in schema:
+        return ""
+        
+    table = []
+    table.append("| 이름 | 타입 | 필수 여부 | 설명 |")
+    table.append("|------|------|:--------:|------|")
+    
+    for prop_name, prop in schema['properties'].items():
+        if not isinstance(prop, dict):
+            continue
             
-            # 스키마 자체에 예시가 있으면 먼저 사용
-            schema = content_details.get('schema', {})
-            if schema and 'example' in schema:
-                markdown.append(format_example(schema['example'], schema, content_type, spec))
+        # 필수 필드 여부 확인
+        is_required = "true" if prop_name in required_props else "false"
+        prop_type = prop.get('type', '-')
+        prop_desc = escape_markdown(prop.get('description', '-'))
+        
+        # enum 값 처리
+        if 'enum' in prop:
+            enum_values = prop['enum']
+            enum_str = ', '.join([f"`{val}`" for val in enum_values])
+            if prop_desc != '-':
+                prop_desc += f"<br>(Enum: {enum_str})"
             else:
-                markdown.append(process_content_examples(content_details, schema, content_type, spec))
+                prop_desc = f"Enum: {enum_str}"
+        
+        table.append(f"| `{prop_name}` | {prop_type} | {is_required} | {prop_desc} |")
+    
+    return "\n".join(table)
 
 def process_schema_example(schema_name, schema, markdown, spec):
     """스키마에 대한 예시를 생성하여 처리합니다."""
-    example = None
+    # example 속성 처리
     if 'example' in schema:
         example = schema['example']
-    else:
-        example = generate_example_from_schema(schema, spec)
-    
-    if example:
         markdown.append("\n**예시:**\n")
         
         markdown.append("```json\n")
@@ -675,6 +791,50 @@ def process_schema_example(schema_name, schema, markdown, spec):
             markdown.append("```xml\n")
             markdown.append(xml_example)
             markdown.append("\n```\n")
+    
+    # examples 속성 처리
+    elif 'examples' in schema:
+        markdown.append("\n**예시:**\n")
+        
+        for example_name, example_value in schema['examples'].items():
+            if example_name:
+                markdown.append(f"\n**{example_name}:**\n")
+            
+            # examples 객체가 value 속성을 가질 경우 해당 값을 사용
+            if isinstance(example_value, dict) and 'value' in example_value:
+                example = example_value['value']
+            else:
+                example = example_value
+                
+            markdown.append("```json\n")
+            markdown.append(json.dumps(example, indent=2, ensure_ascii=False))
+            markdown.append("\n```\n")
+            
+            if 'xml' in schema:
+                xml_root = schema['xml'].get('name', schema_name)
+                xml_example = dict_to_xml_example(example, schema, spec, xml_root)
+                markdown.append("\n**XML 예시:**\n")
+                markdown.append("```xml\n")
+                markdown.append(xml_example)
+                markdown.append("\n```\n")
+    
+    # 예시 없는 경우 생성
+    else:
+        example = generate_example_from_schema(schema, spec)
+        if example and (isinstance(example, dict) or isinstance(example, list)) and len(example) > 0:
+            markdown.append("\n**예시:**\n")
+            
+            markdown.append("```json\n")
+            markdown.append(json.dumps(example, indent=2, ensure_ascii=False))
+            markdown.append("\n```\n")
+            
+            if 'xml' in schema:
+                xml_root = schema['xml'].get('name', schema_name)
+                xml_example = dict_to_xml_example(example, schema, spec, xml_root)
+                markdown.append("\n**XML 예시:**\n")
+                markdown.append("```xml\n")
+                markdown.append(xml_example)
+                markdown.append("\n```\n")
 
 def generate_markdown(spec):
     """OpenAPI 스펙에서 마크다운 문서를 생성합니다."""
@@ -793,8 +953,7 @@ def generate_markdown(spec):
             
             if schema.get('type') == 'array':
                 markdown.append("**타입**: 배열\n\n")
-                
-            markdown.append(format_schema_as_table(schema))
+            markdown.append(format_schema_as_table(schema, None, spec))
             markdown.append("\n")
             
             process_schema_example(schema_name, schema, markdown, spec)
