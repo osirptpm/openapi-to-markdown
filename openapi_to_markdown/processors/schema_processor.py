@@ -88,6 +88,7 @@ class SchemaProcessor:
             table.append(f"| {field['name']} | {field['type']} | {field['required']} | {field['desc']} |")
         
         return "\n".join(table)
+    
     def _collect_fields(self, properties, flat_fields, required_props, spec, prefix="", is_required=False, parent_required=False, parent_required_fields=None):
         """
         스키마 속성을 재귀적으로 처리하여 평면화된 필드 목록을 생성합니다.
@@ -102,10 +103,6 @@ class SchemaProcessor:
             parent_required: 부모 객체의 필수 여부
             parent_required_fields: 부모 객체의 필수 필드 목록
         """
-        # 상위 레벨 required_props와 부모로부터 전달된 required_fields 통합
-        effective_required = required_props or []
-        if parent_required_fields:
-            effective_required = list(set(effective_required + parent_required_fields))
         # 상위 레벨 required_props와 부모로부터 전달된 required_fields 통합
         effective_required = required_props or []
         if parent_required_fields:
@@ -140,7 +137,35 @@ class SchemaProcessor:
             # enum 값 처리
             if 'enum' in prop:
                 prop_desc = self._process_enum_values(prop, prop_desc)
+            
+            # 타입 처리
+            if isinstance(prop_type, list):
+                # 복합 타입에서 'null'을 제외한 주요 타입 추출
+                non_null_types = [t for t in prop_type if t != 'null']
+                if non_null_types:
+                    main_type = non_null_types[0]  # 주요 타입 선택
+                    prop_type_display = str(prop_type)  # 표시용 타입은 원래 형태 유지
                     
+                    # 주요 타입이 object이고 properties가 있는 경우 내부 속성 처리
+                    if main_type == 'object' and 'properties' in prop:
+                        flat_fields.append({
+                            "name": f"`{field_name}`",
+                            "type": prop_type_display,
+                            "required": required_mark,
+                            "desc": prop_desc
+                        })
+                        
+                        # 객체 내부 속성의 required 필드 처리
+                        sub_required_props = prop.get('required', [])
+                        self._collect_fields(
+                            prop['properties'], flat_fields, sub_required_props, spec,
+                            f"{field_name}.", False, field_required, sub_required_props
+                        )
+                        continue
+                else:
+                    # 모든 타입이 'null'인 경우 null로 처리
+                    prop_type = 'null'
+            
             if prop_type == 'array' and 'items' in prop:
                 items = prop['items']
                 if isinstance(items, dict):
@@ -232,7 +257,7 @@ class SchemaProcessor:
                 # 객체 내부 속성의 required 필드 처리
                 sub_required_props = prop.get('required', [])
                 
-        # 참조된 스키마의 필수 필드 목록도 통합
+                # 참조된 스키마의 필수 필드 목록도 통합
                 if ref_required_props:
                     sub_required_props = list(set(sub_required_props + ref_required_props))
                 
