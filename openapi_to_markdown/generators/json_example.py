@@ -111,9 +111,12 @@ class JsonExampleGenerator(ExampleGenerator):
         
         # 예시로 1개의 항목만 생성
         return [item_example]
-        
     def _generate_string_example(self, schema):
         """문자열 타입의 예시를 생성합니다."""
+        # example 값이 있는 경우 우선 사용
+        if 'example' in schema:
+            return schema['example']
+            
         # enum 값이 있는 경우 첫 번째 값 사용
         if 'enum' in schema and schema['enum']:
             return schema['enum'][0]
@@ -137,6 +140,10 @@ class JsonExampleGenerator(ExampleGenerator):
         
     def _generate_integer_example(self, schema):
         """정수 타입의 예시를 생성합니다."""
+        # example 값이 있는 경우 우선 사용
+        if 'example' in schema:
+            return schema['example']
+            
         # enum 값이 있는 경우 첫 번째 값 사용
         if 'enum' in schema and schema['enum']:
             return schema['enum'][0]
@@ -153,6 +160,10 @@ class JsonExampleGenerator(ExampleGenerator):
         
     def _generate_number_example(self, schema):
         """숫자 타입의 예시를 생성합니다."""
+        # example 값이 있는 경우 우선 사용
+        if 'example' in schema:
+            return schema['example']
+            
         # enum 값이 있는 경우 첫 번째 값 사용
         if 'enum' in schema and schema['enum']:
             return schema['enum'][0]
