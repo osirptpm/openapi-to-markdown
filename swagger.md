@@ -82,11 +82,11 @@ Update an existent pet in the store
 
 ```json
 {
-  "id": 10,
-  "name": "doggie",
+  "id": 0,
+  "name": "example_value",
   "category": {
-    "id": 1,
-    "name": "Dogs"
+    "id": 0,
+    "name": "example_value"
   },
   "photoUrls": [
     "example_value"
@@ -122,11 +122,11 @@ Update an existent pet in the store
 
 ```xml
 <pet>
-  <id>10</id>
-  <name>doggie</name>
+  <id>0</id>
+  <name>example_value</name>
   <category>
-    <id>1</id>
-    <name>Dogs</name>
+    <id>0</id>
+    <name>example_value</name>
   </category>
   <photoUrls>
     <photoUrl>example_value</photoUrl>
@@ -161,10 +161,10 @@ Update an existent pet in the store
 **예시:**
 
 ```http
-id=10
-name=doggie
-category.id=1
-category.name=Dogs
+id=0
+name=example_value
+category.id=0
+category.name=example_value
 photoUrls[0]=example_value
 tags[0].id=0
 tags[0].name=example_value
@@ -202,11 +202,11 @@ status=available
 
 ```json
 {
-  "id": 10,
-  "name": "doggie",
+  "id": 0,
+  "name": "example_value",
   "category": {
-    "id": 1,
-    "name": "Dogs"
+    "id": 0,
+    "name": "example_value"
   },
   "photoUrls": [
     "example_value"
@@ -243,11 +243,11 @@ status=available
 
 ```xml
 <pet>
-  <id>10</id>
-  <name>doggie</name>
+  <id>0</id>
+  <name>example_value</name>
   <category>
-    <id>1</id>
-    <name>Dogs</name>
+    <id>0</id>
+    <name>example_value</name>
   </category>
   <photoUrls>
     <photoUrl>example_value</photoUrl>
@@ -343,11 +343,11 @@ Create a new pet in the store
 
 ```json
 {
-  "id": 10,
-  "name": "doggie",
+  "id": 0,
+  "name": "example_value",
   "category": {
-    "id": 1,
-    "name": "Dogs"
+    "id": 0,
+    "name": "example_value"
   },
   "photoUrls": [
     "example_value"
@@ -383,11 +383,11 @@ Create a new pet in the store
 
 ```xml
 <pet>
-  <id>10</id>
-  <name>doggie</name>
+  <id>0</id>
+  <name>example_value</name>
   <category>
-    <id>1</id>
-    <name>Dogs</name>
+    <id>0</id>
+    <name>example_value</name>
   </category>
   <photoUrls>
     <photoUrl>example_value</photoUrl>
@@ -422,10 +422,10 @@ Create a new pet in the store
 **예시:**
 
 ```http
-id=10
-name=doggie
-category.id=1
-category.name=Dogs
+id=0
+name=example_value
+category.id=0
+category.name=example_value
 photoUrls[0]=example_value
 tags[0].id=0
 tags[0].name=example_value
@@ -463,11 +463,11 @@ status=available
 
 ```json
 {
-  "id": 10,
-  "name": "doggie",
+  "id": 0,
+  "name": "example_value",
   "category": {
-    "id": 1,
-    "name": "Dogs"
+    "id": 0,
+    "name": "example_value"
   },
   "photoUrls": [
     "example_value"
@@ -504,11 +504,11 @@ status=available
 
 ```xml
 <pet>
-  <id>10</id>
-  <name>doggie</name>
+  <id>0</id>
+  <name>example_value</name>
   <category>
-    <id>1</id>
-    <name>Dogs</name>
+    <id>0</id>
+    <name>example_value</name>
   </category>
   <photoUrls>
     <photoUrl>example_value</photoUrl>
@@ -623,11 +623,11 @@ Multiple status values can be provided with comma separated strings.
 ```json
 [
   {
-    "id": 10,
-    "name": "doggie",
+    "id": 0,
+    "name": "example_value",
     "category": {
-      "id": 1,
-      "name": "Dogs"
+      "id": 0,
+      "name": "example_value"
     },
     "photoUrls": [
       "example_value"
@@ -672,11 +672,11 @@ Multiple status values can be provided with comma separated strings.
 
 ```xml
 <pet>
-  <id>10</id>
-  <name>doggie</name>
+  <id>0</id>
+  <name>example_value</name>
   <category>
-    <id>1</id>
-    <name>Dogs</name>
+    <id>0</id>
+    <name>example_value</name>
   </category>
   <photoUrls>
     <photoUrl>example_value</photoUrl>
@@ -786,11 +786,11 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 ```json
 [
   {
-    "id": 10,
-    "name": "doggie",
+    "id": 0,
+    "name": "example_value",
     "category": {
-      "id": 1,
-      "name": "Dogs"
+      "id": 0,
+      "name": "example_value"
     },
     "photoUrls": [
       "example_value"
@@ -835,11 +835,11 @@ Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3
 
 ```xml
 <pet>
-  <id>10</id>
-  <name>doggie</name>
+  <id>0</id>
+  <name>example_value</name>
   <category>
-    <id>1</id>
-    <name>Dogs</name>
+    <id>0</id>
+    <name>example_value</name>
   </category>
   <photoUrls>
     <photoUrl>example_value</photoUrl>
@@ -941,11 +941,11 @@ Returns a single pet.
 
 ```json
 {
-  "id": 10,
-  "name": "doggie",
+  "id": 0,
+  "name": "example_value",
   "category": {
-    "id": 1,
-    "name": "Dogs"
+    "id": 0,
+    "name": "example_value"
   },
   "photoUrls": [
     "example_value"
@@ -982,11 +982,11 @@ Returns a single pet.
 
 ```xml
 <pet>
-  <id>10</id>
-  <name>doggie</name>
+  <id>0</id>
+  <name>example_value</name>
   <category>
-    <id>1</id>
-    <name>Dogs</name>
+    <id>0</id>
+    <name>example_value</name>
   </category>
   <photoUrls>
     <photoUrl>example_value</photoUrl>
@@ -1101,11 +1101,11 @@ Updates a pet resource based on the form data.
 
 ```json
 {
-  "id": 10,
-  "name": "doggie",
+  "id": 0,
+  "name": "example_value",
   "category": {
-    "id": 1,
-    "name": "Dogs"
+    "id": 0,
+    "name": "example_value"
   },
   "photoUrls": [
     "example_value"
@@ -1142,11 +1142,11 @@ Updates a pet resource based on the form data.
 
 ```xml
 <pet>
-  <id>10</id>
-  <name>doggie</name>
+  <id>0</id>
+  <name>example_value</name>
   <category>
-    <id>1</id>
-    <name>Dogs</name>
+    <id>0</id>
+    <name>example_value</name>
   </category>
   <photoUrls>
     <photoUrl>example_value</photoUrl>
@@ -1413,7 +1413,10 @@ Returns a map of status codes to quantities.
 **예시:**
 
 ```json
-{}
+{
+  "property1": "value1",
+  "property2": "value2"
+}
 ```
 
 
@@ -1474,11 +1477,11 @@ Place a new order in the store.
 
 ```json
 {
-  "id": 10,
-  "petId": 198772,
-  "quantity": 7,
+  "id": 0,
+  "petId": 0,
+  "quantity": 0,
   "shipDate": "2023-01-01T00:00:00Z",
-  "status": "approved",
+  "status": "placed",
   "complete": false
 }
 ```
@@ -1500,11 +1503,11 @@ Place a new order in the store.
 
 ```xml
 <order>
-  <id>10</id>
-  <petId>198772</petId>
-  <quantity>7</quantity>
+  <id>0</id>
+  <petId>0</petId>
+  <quantity>0</quantity>
   <shipDate>2023-01-01T00:00:00Z</shipDate>
-  <status>approved</status>
+  <status>placed</status>
   <complete>False</complete>
 </order>
 ```
@@ -1525,11 +1528,11 @@ Place a new order in the store.
 **예시:**
 
 ```http
-id=10
-petId=198772
-quantity=7
+id=0
+petId=0
+quantity=0
 shipDate=2023-01-01T00:00:00Z
-status=approved
+status=placed
 complete=False
 ```
 
@@ -1560,11 +1563,11 @@ complete=False
 
 ```json
 {
-  "id": 10,
-  "petId": 198772,
-  "quantity": 7,
+  "id": 0,
+  "petId": 0,
+  "quantity": 0,
   "shipDate": "2023-01-01T00:00:00Z",
-  "status": "approved",
+  "status": "placed",
   "complete": false
 }
 ```
@@ -1657,11 +1660,11 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
 
 ```json
 {
-  "id": 10,
-  "petId": 198772,
-  "quantity": 7,
+  "id": 0,
+  "petId": 0,
+  "quantity": 0,
   "shipDate": "2023-01-01T00:00:00Z",
-  "status": "approved",
+  "status": "placed",
   "complete": false
 }
 ```
@@ -1684,11 +1687,11 @@ For valid response try integer IDs with value <= 5 or > 10. Other values will ge
 
 ```xml
 <order>
-  <id>10</id>
-  <petId>198772</petId>
-  <quantity>7</quantity>
+  <id>0</id>
+  <petId>0</petId>
+  <quantity>0</quantity>
   <shipDate>2023-01-01T00:00:00Z</shipDate>
-  <status>approved</status>
+  <status>placed</status>
   <complete>False</complete>
 </order>
 ```
@@ -1836,14 +1839,14 @@ Created user object
 
 ```json
 {
-  "id": 10,
-  "username": "theUser",
-  "firstName": "John",
-  "lastName": "James",
-  "email": "john@email.com",
-  "password": "12345",
-  "phone": "12345",
-  "userStatus": 1
+  "id": 0,
+  "username": "example_value",
+  "firstName": "example_value",
+  "lastName": "example_value",
+  "email": "example_value",
+  "password": "example_value",
+  "phone": "example_value",
+  "userStatus": 0
 }
 ```
 
@@ -1866,14 +1869,14 @@ Created user object
 
 ```xml
 <user>
-  <id>10</id>
-  <username>theUser</username>
-  <firstName>John</firstName>
-  <lastName>James</lastName>
-  <email>john@email.com</email>
-  <password>12345</password>
-  <phone>12345</phone>
-  <userStatus>1</userStatus>
+  <id>0</id>
+  <username>example_value</username>
+  <firstName>example_value</firstName>
+  <lastName>example_value</lastName>
+  <email>example_value</email>
+  <password>example_value</password>
+  <phone>example_value</phone>
+  <userStatus>0</userStatus>
 </user>
 ```
 
@@ -1895,14 +1898,14 @@ Created user object
 **예시:**
 
 ```http
-id=10
-username=theUser
-firstName=John
-lastName=James
-email=john@email.com
-password=12345
-phone=12345
-userStatus=1
+id=0
+username=example_value
+firstName=example_value
+lastName=example_value
+email=example_value
+password=example_value
+phone=example_value
+userStatus=0
 ```
 
 #### 응답
@@ -1934,14 +1937,14 @@ userStatus=1
 
 ```json
 {
-  "id": 10,
-  "username": "theUser",
-  "firstName": "John",
-  "lastName": "James",
-  "email": "john@email.com",
-  "password": "12345",
-  "phone": "12345",
-  "userStatus": 1
+  "id": 0,
+  "username": "example_value",
+  "firstName": "example_value",
+  "lastName": "example_value",
+  "email": "example_value",
+  "password": "example_value",
+  "phone": "example_value",
+  "userStatus": 0
 }
 ```
 
@@ -1965,14 +1968,14 @@ userStatus=1
 
 ```xml
 <user>
-  <id>10</id>
-  <username>theUser</username>
-  <firstName>John</firstName>
-  <lastName>James</lastName>
-  <email>john@email.com</email>
-  <password>12345</password>
-  <phone>12345</phone>
-  <userStatus>1</userStatus>
+  <id>0</id>
+  <username>example_value</username>
+  <firstName>example_value</firstName>
+  <lastName>example_value</lastName>
+  <email>example_value</email>
+  <password>example_value</password>
+  <phone>example_value</phone>
+  <userStatus>0</userStatus>
 </user>
 ```
 
@@ -2041,14 +2044,14 @@ Creates list of users with given input array.
 ```json
 [
   {
-    "id": 10,
-    "username": "theUser",
-    "firstName": "John",
-    "lastName": "James",
-    "email": "john@email.com",
-    "password": "12345",
-    "phone": "12345",
-    "userStatus": 1
+    "id": 0,
+    "username": "example_value",
+    "firstName": "example_value",
+    "lastName": "example_value",
+    "email": "example_value",
+    "password": "example_value",
+    "phone": "example_value",
+    "userStatus": 0
   }
 ]
 ```
@@ -2082,14 +2085,14 @@ Creates list of users with given input array.
 
 ```json
 {
-  "id": 10,
-  "username": "theUser",
-  "firstName": "John",
-  "lastName": "James",
-  "email": "john@email.com",
-  "password": "12345",
-  "phone": "12345",
-  "userStatus": 1
+  "id": 0,
+  "username": "example_value",
+  "firstName": "example_value",
+  "lastName": "example_value",
+  "email": "example_value",
+  "password": "example_value",
+  "phone": "example_value",
+  "userStatus": 0
 }
 ```
 
@@ -2113,14 +2116,14 @@ Creates list of users with given input array.
 
 ```xml
 <user>
-  <id>10</id>
-  <username>theUser</username>
-  <firstName>John</firstName>
-  <lastName>James</lastName>
-  <email>john@email.com</email>
-  <password>12345</password>
-  <phone>12345</phone>
-  <userStatus>1</userStatus>
+  <id>0</id>
+  <username>example_value</username>
+  <firstName>example_value</firstName>
+  <lastName>example_value</lastName>
+  <email>example_value</email>
+  <password>example_value</password>
+  <phone>example_value</phone>
+  <userStatus>0</userStatus>
 </user>
 ```
 
@@ -2354,14 +2357,14 @@ Get user detail based on username.
 
 ```json
 {
-  "id": 10,
-  "username": "theUser",
-  "firstName": "John",
-  "lastName": "James",
-  "email": "john@email.com",
-  "password": "12345",
-  "phone": "12345",
-  "userStatus": 1
+  "id": 0,
+  "username": "example_value",
+  "firstName": "example_value",
+  "lastName": "example_value",
+  "email": "example_value",
+  "password": "example_value",
+  "phone": "example_value",
+  "userStatus": 0
 }
 ```
 
@@ -2385,14 +2388,14 @@ Get user detail based on username.
 
 ```xml
 <user>
-  <id>10</id>
-  <username>theUser</username>
-  <firstName>John</firstName>
-  <lastName>James</lastName>
-  <email>john@email.com</email>
-  <password>12345</password>
-  <phone>12345</phone>
-  <userStatus>1</userStatus>
+  <id>0</id>
+  <username>example_value</username>
+  <firstName>example_value</firstName>
+  <lastName>example_value</lastName>
+  <email>example_value</email>
+  <password>example_value</password>
+  <phone>example_value</phone>
+  <userStatus>0</userStatus>
 </user>
 ```
 
@@ -2477,14 +2480,14 @@ Update an existent user in the store
 
 ```json
 {
-  "id": 10,
-  "username": "theUser",
-  "firstName": "John",
-  "lastName": "James",
-  "email": "john@email.com",
-  "password": "12345",
-  "phone": "12345",
-  "userStatus": 1
+  "id": 0,
+  "username": "example_value",
+  "firstName": "example_value",
+  "lastName": "example_value",
+  "email": "example_value",
+  "password": "example_value",
+  "phone": "example_value",
+  "userStatus": 0
 }
 ```
 
@@ -2507,14 +2510,14 @@ Update an existent user in the store
 
 ```xml
 <user>
-  <id>10</id>
-  <username>theUser</username>
-  <firstName>John</firstName>
-  <lastName>James</lastName>
-  <email>john@email.com</email>
-  <password>12345</password>
-  <phone>12345</phone>
-  <userStatus>1</userStatus>
+  <id>0</id>
+  <username>example_value</username>
+  <firstName>example_value</firstName>
+  <lastName>example_value</lastName>
+  <email>example_value</email>
+  <password>example_value</password>
+  <phone>example_value</phone>
+  <userStatus>0</userStatus>
 </user>
 ```
 
@@ -2536,14 +2539,14 @@ Update an existent user in the store
 **예시:**
 
 ```http
-id=10
-username=theUser
-firstName=John
-lastName=James
-email=john@email.com
-password=12345
-phone=12345
-userStatus=1
+id=0
+username=example_value
+firstName=example_value
+lastName=example_value
+email=example_value
+password=example_value
+phone=example_value
+userStatus=0
 ```
 
 #### 응답
@@ -2681,11 +2684,11 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 ```json
 {
-  "id": 10,
-  "petId": 198772,
-  "quantity": 7,
+  "id": 0,
+  "petId": 0,
+  "quantity": 0,
   "shipDate": "2023-01-01T00:00:00Z",
-  "status": "approved",
+  "status": "placed",
   "complete": false
 }
 ```
@@ -2702,8 +2705,8 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 ```json
 {
-  "id": 1,
-  "name": "Dogs"
+  "id": 0,
+  "name": "example_value"
 }
 ```
 
@@ -2725,14 +2728,14 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 ```json
 {
-  "id": 10,
-  "username": "theUser",
-  "firstName": "John",
-  "lastName": "James",
-  "email": "john@email.com",
-  "password": "12345",
-  "phone": "12345",
-  "userStatus": 1
+  "id": 0,
+  "username": "example_value",
+  "firstName": "example_value",
+  "lastName": "example_value",
+  "email": "example_value",
+  "password": "example_value",
+  "phone": "example_value",
+  "userStatus": 0
 }
 ```
 
@@ -2773,11 +2776,11 @@ API에서 사용되는 데이터 모델 스키마입니다.
 
 ```json
 {
-  "id": 10,
-  "name": "doggie",
+  "id": 0,
+  "name": "example_value",
   "category": {
-    "id": 1,
-    "name": "Dogs"
+    "id": 0,
+    "name": "example_value"
   },
   "photoUrls": [
     "example_value"

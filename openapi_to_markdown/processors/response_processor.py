@@ -21,8 +21,7 @@ class ResponseProcessor:
         self.schema_processor = SchemaProcessor()
         self.reference_resolver = ReferenceResolver()
         self.markdown_utils = MarkdownUtils()
-    
-    def process_response(self, status, response, spec):
+    def process_response(self, status, response, spec, context=None):
         """
         응답을 처리합니다.
         
@@ -30,6 +29,7 @@ class ResponseProcessor:
             status: 응답 상태 코드
             response: 처리할 응답 객체
             spec: 전체 OpenAPI 스펙
+            context: API 컨텍스트 정보 (path, method, tag 등)
             
         Returns:
             list: 생성된 마크다운 문자열 목록
@@ -99,16 +99,14 @@ class ResponseProcessor:
                 
                 # Content Type 추가
                 markdown.append(f"**Content Type**: {content_type}\n")
-                
-                # 예시 처리
-                example_md = self.process_content_examples(content_details, schema, content_type, spec)
+                  # 예시 처리
+                example_md = self.process_content_examples(content_details, schema, content_type, spec, context)
                 if example_md:
                     markdown.append(example_md)
                     markdown.append("\n")
         
         return markdown
-    
-    def process_content_examples(self, content_details, schema, content_type, spec=None):
+    def process_content_examples(self, content_details, schema, content_type, spec=None, context=None):
         """
         컨텐츠 세부 정보에서 예시 데이터를 처리합니다.
         
@@ -117,6 +115,7 @@ class ResponseProcessor:
             schema: 관련 스키마
             content_type: 컨텐츠 타입
             spec: 전체 OpenAPI 스펙
+            context: API 컨텍스트 정보
             
         Returns:
             str: 생성된 예시 마크다운 문자열
@@ -167,9 +166,8 @@ class ResponseProcessor:
             # 스키마가 있는 경우에만 예시 생성
             if schema:
                 generator = ExampleGeneratorFactory.create(content_type)
-                
-                # generate_example 메서드에서 참조 처리가 진행되므로 schema를 바로 전달
-                example_value = generator.generate_example(schema, spec)
+                  # generate_example 메서드에서 참조 처리가 진행되므로 schema를 바로 전달
+                example_value = generator.generate_example(schema, spec, context)
                 
                 result.append("\n**예시:**\n")
                 result.append(generator.format_example(example_value, schema, spec))

@@ -227,14 +227,22 @@ class MarkdownGenerator:
                     markdown.extend(self.request_processor.process_request_body(request_body, spec))
                 else:
                     markdown.append("#### 요청\n\n")
-                
-                # 5. 응답
+                  # 5. 응답
                 responses = operation.get('responses', {})
                 if responses:
                     markdown.append("#### 응답\n")
                     
+                    # 컨텍스트 정보 구성
+                    context = {
+                        'path': path,
+                        'method': method,
+                        'tag': tag,
+                        'operation_id': operation.get('operationId', ''),
+                        'summary': operation.get('summary', '')
+                    }
+                    
                     for status, response in responses.items():
-                        markdown.extend(self.response_processor.process_response(status, response, spec))
+                        markdown.extend(self.response_processor.process_response(status, response, spec, context))
                 
                 markdown.append("\n---\n")
         
