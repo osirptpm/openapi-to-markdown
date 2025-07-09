@@ -79,8 +79,8 @@ class SchemaProcessor:
         if title:
             table.append(f"{title}\n")
         
-        table.append("| 이름 | 타입 | 필수 여부 | 설명 |")
-        table.append("|------|------|:--------:|------|")
+        table.append("| 이름 | 타입 | 설명 | 필수 |")  # 컬럼 순서 변경
+        table.append("|------|------|------|:----:|")  # 구분선도 맞게 변경
         
         flat_fields = []
         required_props = schema.get('required', [])
@@ -88,8 +88,8 @@ class SchemaProcessor:
         self._collect_fields(schema.get('properties', {}), flat_fields, required_props, spec)
         
         for field in flat_fields:
-            table.append(f"| {field['name']} | {field['type']} | {field['required']} | {field['desc']} |")
-        
+            table.append(f"| {field['name']} | {field['type']} | {field['desc']} | {field['required']} |")
+
         return "\n".join(table)
     
     def _collect_fields(self, properties, flat_fields, required_props, spec, prefix="", is_required=False, parent_required=False, parent_required_fields=None):
@@ -130,10 +130,8 @@ class SchemaProcessor:
             field_name = f"{prefix}{prop_name}"
             prop_type = prop.get('type', '-')
             prop_desc = self.markdown_utils.escape_markdown(prop.get('description', '-'))
-            
-            # 필수 필드 여부 확인 - 명확하고 통합된 로직
-            field_required = (prop_name in effective_required or 
-                             is_required or parent_required)
+              # 필수 필드 여부 확인 - 스키마의 required 배열만 확인
+            field_required = (prop_name in effective_required)
                 
             required_mark = "true" if field_required else "false"
             

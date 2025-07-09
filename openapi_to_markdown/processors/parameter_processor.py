@@ -62,8 +62,8 @@ class ParameterProcessor:
         # 경로 파라미터 처리
         if path_params:
             markdown.append("\n##### 경로 파라미터\n")
-            markdown.append("| 이름 | 타입 | 필수 여부 | 설명 |")
-            markdown.append("|------|------|:--------:|------|")
+            markdown.append("| 이름 | 타입 | 설명 | 필수 |")  # 컬럼 순서 변경
+            markdown.append("|------|------|------|:----:|")  # 구분선도 맞게 변경
             
             for param in path_params:
                 name = param.get('name', '')
@@ -81,16 +81,16 @@ class ParameterProcessor:
                 
                 # explode 처리
                 description = self._process_explode_param(param, description)
-                
-                markdown.append(f"| `{name}` | {param_type} | {required} | {description} |")
-            
+
+                markdown.append(f"| `{name}` | {param_type} | {description} | {required} |")
+
             markdown.append("")
         
         # 쿼리 파라미터 처리
         if query_params:
             markdown.append("\n##### 쿼리 파라미터\n")
-            markdown.append("| 이름 | 타입 | 필수 여부 | 설명 |")
-            markdown.append("|------|------|:--------:|------|")
+            markdown.append("| 이름 | 타입 | 설명 | 필수 |")
+            markdown.append("|------|------|------|:----:|")
             
             for param in query_params:
                 name = param.get('name', '')
@@ -108,16 +108,16 @@ class ParameterProcessor:
                 
                 # explode 처리
                 description = self._process_explode_param(param, description)
-                
-                markdown.append(f"| `{name}` | {param_type} | {required} | {description} |")
-            
+
+                markdown.append(f"| `{name}` | {param_type} | {description} | {required} |")
+
             markdown.append("")
         
         # 헤더 파라미터 처리
         if header_params:
             markdown.append("\n##### 헤더 파라미터\n")
-            markdown.append("| 이름 | 타입 | 필수 여부 | 설명 |")
-            markdown.append("|------|------|:--------:|------|")
+            markdown.append("| 이름 | 타입 | 설명 | 필수 |")
+            markdown.append("|------|------|------|:----:|")
             
             for param in header_params:
                 name = param.get('name', '')
@@ -140,8 +140,8 @@ class ParameterProcessor:
         # 쿠키 파라미터 처리
         if cookie_params:
             markdown.append("\n##### 쿠키 파라미터\n")
-            markdown.append("| 이름 | 타입 | 필수 여부 | 설명 |")
-            markdown.append("|------|------|:--------:|------|")
+            markdown.append("| 이름 | 타입 | 설명 | 필수 |")
+            markdown.append("|------|------|------|:----:|")
             
             for param in cookie_params:
                 name = param.get('name', '')
@@ -156,9 +156,9 @@ class ParameterProcessor:
                 
                 # explode 처리
                 description = self._process_explode_param(param, description)
-                
-                markdown.append(f"| `{name}` | {param_type} | {required} | {description} |")
-            
+
+                markdown.append(f"| `{name}` | {param_type} | {description} | {required} |")
+
             markdown.append("")
         
         return markdown
