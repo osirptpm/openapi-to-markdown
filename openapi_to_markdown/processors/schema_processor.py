@@ -115,195 +115,24 @@ class SchemaProcessor:
             if not isinstance(prop, dict):
                 continue
                 
-            # $ref 처리
-            ref_required_props = []
-            if '$ref' in prop and spec:
-                resolved_prop = self.reference_resolver.resolve_ref(prop['$ref'], spec)
-                if resolved_prop:
-                    # 참조된 스키마의 필수 필드 목록 가져오기
-                    if 'required' in resolved_prop and isinstance(resolved_prop['required'], list):
-                        ref_required_props = resolved_prop['required']
-                    
-                    # 원본 속성 보존하면서 참조된 속성 병합
-                    prop = {**resolved_prop, **{k: v for k, v in prop.items() if k != '$ref'}}
-                
+            # $ref 처리 (유틸리티 함수 사용)
+            prop, ref_required_props = self._resolve_ref_if_present(prop, spec)
+            
             field_name = f"{prefix}{prop_name}"
             prop_type = prop.get('type', '-')
             prop_desc = self.markdown_utils.escape_markdown(prop.get('description', '-'))
-              # 필수 필드 여부 확인 - 스키마의 required 배열만 확인
             field_required = (prop_name in effective_required)
-                
             required_mark = "true" if field_required else "false"
             
             # enum 값 처리
             if 'enum' in prop:
                 prop_desc = self._process_enum_values(prop, prop_desc)
             
-            # 타입 처리
-            if isinstance(prop_type, list):
-                # 복합 타입에서 'null'을 제외한 주요 타입 추출
-                non_null_types = [t for t in prop_type if t != 'null']
-                if non_null_types:
-                    main_type = non_null_types[0]  # 주요 타입 선택
-                    prop_type_display = str(prop_type)  # 표시용 타입은 원래 형태 유지
-                    
-                    # 주요 타입이 object이고 properties가 있는 경우 내부 속성 처리
-                    if main_type == 'object' and 'properties' in prop:
-                        flat_fields.append({
-                            "name": f"`{field_name}`",
-                            "type": prop_type_display,
-                            "required": required_mark,
-                            "desc": prop_desc
-                        })
-                        
-                        # 객체 내부 속성의 required 필드 처리
-                        sub_required_props = prop.get('required', [])
-                        self._collect_fields(
-                            prop['properties'], flat_fields, sub_required_props, spec,
-                            f"{field_name}.", False, field_required, sub_required_props
-                        )
-                        continue
-                else:
-                    # 모든 타입이 'null'인 경우 null로 처리
-                    prop_type = 'null'
-            
-            if prop_type == 'array' and 'items' in prop:
-                items = prop['items']
-                if isinstance(items, dict):
-                    # $ref가 있는 경우 처리
-                    if '$ref' in items and spec:
-                        ref = items['$ref']
-                        ref_parts = ref.split('/')
-                        ref_name = ref_parts[-1] if ref_parts else "object"
-                        ref_schema = self.reference_resolver.resolve_ref(ref, spec)
-                        
-                        flat_fields.append({
-                            "name": f"`{field_name}[]`",
-                            "type": f"array&lt;{ref_name}&gt;",
-                            "required": required_mark,
-                            "desc": prop_desc
-                        })
-                        
-                        # ref_schema가 있고 properties가 있으면 하위 항목도 표시
-                        if ref_schema and 'properties' in ref_schema:
-                            ref_required_props = ref_schema.get('required', [])
-                            for sub_name, sub_prop in ref_schema['properties'].items():
-                                # $ref 처리 - 배열 항목 내부의 스키마도 참조가 있을 수 있음
-                                if '$ref' in sub_prop and spec:
-                                    sub_resolved = self.reference_resolver.resolve_ref(sub_prop['$ref'], spec)
-                                    if sub_resolved:
-                                        sub_prop = {**sub_resolved, **{k: v for k, v in sub_prop.items() if k != '$ref'}}
-                                
-                                sub_type = sub_prop.get('type', '-')
-                                sub_desc = self.markdown_utils.escape_markdown(sub_prop.get('description', '-'))
-                                sub_required = sub_name in ref_required_props
-                                
-                                # enum 값 처리
-                                if 'enum' in sub_prop:
-                                    sub_desc = self._process_enum_values(sub_prop, sub_desc)
-                                
-                                flat_fields.append({
-                                    "name": f"`{field_name}[].{sub_name}`",
-                                    "type": sub_type,
-                                    "required": "true" if sub_required else "false",
-                                    "desc": sub_desc
-                                })
-                    # 일반 객체 타입인 경우
-                    elif items.get('type') == 'object' or 'properties' in items:
-                        flat_fields.append({
-                            "name": f"`{field_name}[]`",
-                            "type": f"array&lt;object&gt;",
-                            "required": required_mark,
-                            "desc": prop_desc
-                        })
-                        if 'properties' in items:
-                            items_required_props = items.get('required', [])
-                            for sub_name, sub_prop in items['properties'].items():
-                                # $ref 처리 - 배열 내부의 스키마도 참조가 있을 수 있음
-                                if '$ref' in sub_prop and spec:
-                                    sub_resolved = self.reference_resolver.resolve_ref(sub_prop['$ref'], spec)
-                                    if sub_resolved:
-                                        sub_prop = {**sub_resolved, **{k: v for k, v in sub_prop.items() if k != '$ref'}}
-                                
-                                sub_type = sub_prop.get('type', '-')
-                                sub_desc = self.markdown_utils.escape_markdown(sub_prop.get('description', '-'))
-                                sub_required = sub_name in items_required_props
-                                
-                                # enum 값 처리
-                                if 'enum' in sub_prop:
-                                    sub_desc = self._process_enum_values(sub_prop, sub_desc)
-                                
-                                flat_fields.append({
-                                    "name": f"`{field_name}[].{sub_name}`",
-                                    "type": sub_type,
-                                    "required": "true" if sub_required else "false",
-                                    "desc": sub_desc
-                                })
-                    # 기타 기본 타입인 경우
-                    else:
-                        item_type = items.get('type', '-')
-                        flat_fields.append({
-                            "name": f"`{field_name}[]`",
-                            "type": f"array&lt;{item_type}&gt;",
-                            "required": required_mark,
-                            "desc": prop_desc
-                        })
-            elif prop_type == 'object' and 'properties' in prop:
-                flat_fields.append({
-                    "name": f"`{field_name}`",
-                    "type": "object",
-                    "required": required_mark,
-                    "desc": prop_desc
-                })
-                # 객체 내부 속성의 required 필드 처리
-                sub_required_props = prop.get('required', [])
-                  # 참조된 스키마의 필수 필드 목록도 통합
-                if ref_required_props:
-                    sub_required_props = list(set(sub_required_props + ref_required_props))
-                    
-                self._collect_fields(
-                    prop['properties'], flat_fields, sub_required_props, spec,
-                    f"{field_name}.", False, field_required, sub_required_props
-                )
-            elif 'oneOf' in prop:
-                # oneOf 타입 처리 - object 타입으로 표시하고 가능한 타입들을 설명에 추가
-                oneof_type = "object"
-                discriminator = prop.get('discriminator')
-                additional_desc = ""
-                
-                if discriminator:
-                    mapping = discriminator.get('mapping', {})
-                    if mapping:
-                        type_options = list(mapping.keys())
-                        additional_desc = f"가능한 타입: {', '.join(type_options)}"
-                    
-                    property_name = discriminator.get('propertyName', 'type')
-                    if additional_desc:
-                        additional_desc += f" (discriminator: {property_name})"
-                    else:
-                        additional_desc = f"discriminator 속성: {property_name}"
-                
-                # 설명에 oneOf 정보 추가
-                final_desc = prop_desc
-                if additional_desc:
-                    final_desc = f"{prop_desc} {additional_desc}".strip()
-                
-                flat_fields.append({
-                    "name": f"`{field_name}`",
-                    "type": oneof_type,
-                    "required": required_mark,
-                    "desc": final_desc
-                })
-                
-                # oneOf 스키마들의 공통/대표 properties 표시
-                self._add_oneof_properties(prop, field_name, flat_fields, spec)
-            else:
-                flat_fields.append({
-                    "name": f"`{field_name}`",
-                    "type": prop_type,
-                    "required": required_mark,
-                    "desc": prop_desc
-                })
+            # 타입별 처리 로직 적용
+            self._process_property_by_type(
+                prop_type, prop, field_name, flat_fields, required_mark, 
+                prop_desc, effective_required, spec, field_required
+            )
     
     def _process_enum_values(self, schema, description='-'):
         """
@@ -462,12 +291,13 @@ class SchemaProcessor:
                 # discriminator 속성 먼저 추가
                 if discriminator:
                     property_name = discriminator.get('propertyName', 'type')
-                    flat_fields.append({
-                        "name": f"`{field_name}.{property_name}`",
-                        "type": "string",
-                        "required": "true",
-                        "desc": f"객체 타입 구분자 (가능한 값: {', '.join([f'`{k}`' for k in mapping.keys()])})"
-                    })
+                    self._add_field(
+                        flat_fields, 
+                        f"{field_name}.{property_name}", 
+                        "String", 
+                        f"객체 타입 구분자 (가능한 값: {', '.join([f'`{k}`' for k in mapping.keys()])})", 
+                        True
+                    )
                 
                 # 나머지 properties 추가
                 for prop_name, prop_schema in resolved_schema['properties'].items():
@@ -489,12 +319,13 @@ class SchemaProcessor:
                     if 'enum' in prop_schema:
                         prop_desc = self._process_enum_values(prop_schema, prop_desc)
                     
-                    flat_fields.append({
-                        "name": f"`{field_name}.{prop_name}`",
-                        "type": prop_type,
-                        "required": "true" if is_required else "false",
-                        "desc": prop_desc
-                    })
+                    self._add_field(
+                        flat_fields,
+                        f"{field_name}.{prop_name}",
+                        prop_type,  # 원래 타입 전달 (_format_type_for_display 함수가 내부적으로 호출됨)
+                        prop_desc,
+                        is_required
+                    )
                     
                     # 중첩된 object나 array 처리
                     if prop_type == 'object' and 'properties' in prop_schema:
@@ -509,6 +340,79 @@ class SchemaProcessor:
                             # 배열 항목 처리는 기존 로직 재사용
                             self._process_array_items(items, f"{field_name}.{prop_name}", flat_fields, spec, prop_desc)
 
+    def _format_type_for_display(self, prop_type):
+        """
+        타입 정보를 마크다운 표시용 형식으로 변환합니다.
+        
+        Args:
+            prop_type: 타입 정보 (문자열 또는 문자열 리스트)
+            
+        Returns:
+            str: 포맷팅된 타입 문자열
+        """
+        if isinstance(prop_type, list):
+            return " \\| ".join([t.capitalize() for t in prop_type])
+        return prop_type.capitalize() if isinstance(prop_type, str) else str(prop_type)
+    
+    def _resolve_ref_if_present(self, prop, spec):
+        """
+        속성에 참조($ref)가 있으면 해결합니다.
+        
+        Args:
+            prop: 속성 객체
+            spec: 전체 OpenAPI 스펙
+            
+        Returns:
+            tuple: (해결된 속성, 필수 필드 목록)
+        """
+        ref_required_props = []
+        if '$ref' in prop and spec:
+            resolved_prop = self.reference_resolver.resolve_ref(prop['$ref'], spec)
+            if resolved_prop:
+                # 참조된 스키마의 필수 필드 목록 가져오기
+                if 'required' in resolved_prop and isinstance(resolved_prop['required'], list):
+                    ref_required_props = resolved_prop['required']
+                
+                # 원본 속성 보존하면서 참조된 속성 병합
+                prop = {**resolved_prop, **{k: v for k, v in prop.items() if k != '$ref'}}
+        
+        return prop, ref_required_props
+    
+    def _process_sub_property(self, sub_prop, sub_name, field_name, flat_fields, required_props, spec):
+        """
+        단일 서브 속성을 처리하고 필드 목록에 추가합니다.
+        
+        Args:
+            sub_prop: 서브 속성 객체
+            sub_name: 서브 속성 이름
+            field_name: 상위 필드 이름
+            flat_fields: 결과를 담을 평면화된 필드 목록
+            required_props: 필수 속성 목록
+            spec: 전체 OpenAPI 스펙
+        """
+        # $ref 처리
+        sub_prop, _ = self._resolve_ref_if_present(sub_prop, spec)
+        
+        # 타입 정보 추출 및 포맷팅
+        sub_type = sub_prop.get('type', '-')
+        
+        # 설명 추출 및 이스케이프
+        sub_desc = self.markdown_utils.escape_markdown(sub_prop.get('description', '-'))
+        sub_required = sub_name in required_props
+        
+        # enum 값 처리
+        if 'enum' in sub_prop:
+            sub_desc = self._process_enum_values(sub_prop, sub_desc)
+        
+        # 필드 추가
+        self._add_field(
+            flat_fields,
+            f"{field_name}.{sub_name}",
+            sub_type,  # 원래 타입 전달
+            sub_desc,
+            sub_required
+        )
+
     def _process_array_items(self, items_schema, field_name, flat_fields, spec, parent_desc):
         """
         배열 항목의 스키마를 처리합니다.
@@ -520,6 +424,7 @@ class SchemaProcessor:
             spec: 전체 OpenAPI 스펙
             parent_desc: 부모 설명
         """
+        # $ref가 있는 경우 처리
         if '$ref' in items_schema and spec:
             ref = items_schema['$ref']
             ref_parts = ref.split('/')
@@ -529,37 +434,182 @@ class SchemaProcessor:
             if ref_schema and 'properties' in ref_schema:
                 ref_required_props = ref_schema.get('required', [])
                 for sub_name, sub_prop in ref_schema['properties'].items():
-                    if '$ref' in sub_prop and spec:
-                        sub_resolved = self.reference_resolver.resolve_ref(sub_prop['$ref'], spec)
-                        if sub_resolved:
-                            sub_prop = {**sub_resolved, **{k: v for k, v in sub_prop.items() if k != '$ref'}}
-                    
-                    sub_type = sub_prop.get('type', '-')
-                    sub_desc = self.markdown_utils.escape_markdown(sub_prop.get('description', '-'))
-                    sub_required = sub_name in ref_required_props
-                    
-                    if 'enum' in sub_prop:
-                        sub_desc = self._process_enum_values(sub_prop, sub_desc)
-                    
-                    flat_fields.append({
-                        "name": f"`{field_name}[].{sub_name}`",
-                        "type": sub_type,
-                        "required": "true" if sub_required else "false",
-                        "desc": sub_desc
-                    })
+                    self._process_sub_property(sub_prop, sub_name, f"{field_name}[]", flat_fields, ref_required_props, spec)
+        
+        # 일반 객체 타입인 경우
         elif 'properties' in items_schema:
             items_required_props = items_schema.get('required', [])
             for sub_name, sub_prop in items_schema['properties'].items():
-                sub_type = sub_prop.get('type', '-')
-                sub_desc = self.markdown_utils.escape_markdown(sub_prop.get('description', '-'))
-                sub_required = sub_name in items_required_props
+                self._process_sub_property(sub_prop, sub_name, f"{field_name}[]", flat_fields, items_required_props, spec)
+
+    def _add_field(self, flat_fields, field_name, field_type, description, required):
+        """
+        필드를 flat_fields 목록에 추가합니다.
+        
+        Args:
+            flat_fields: 결과를 담을 평면화된 필드 목록
+            field_name: 필드 이름
+            field_type: 필드 타입
+            description: 필드 설명
+            required: 필수 여부
+        """
+        # 필드 이름에 이미 ` 문자가 있으면 추가하지 않음
+        if not field_name.startswith('`'):
+            field_name = f"`{field_name}`"
+        
+        flat_fields.append({
+            "name": field_name,
+            "type": self._format_type_for_display(field_type),
+            "required": "O" if required else "X",
+            "desc": description
+        })
+    
+    def _process_property_by_type(self, prop_type, prop, field_name, flat_fields, required_mark, prop_desc, required_props, spec, field_required):
+        """
+        속성 타입에 따라 적절한 처리를 수행합니다.
+        """
+        # 타입이 배열인 경우
+        if isinstance(prop_type, list):
+            self._process_list_type_property(prop_type, prop, field_name, flat_fields, required_mark, prop_desc, required_props, spec, field_required)
+        # 배열 타입인 경우
+        elif prop_type == 'array' and 'items' in prop:
+            self._process_array_type_property(prop, field_name, flat_fields, required_mark, prop_desc, spec)
+        # 객체 타입인 경우
+        elif prop_type == 'object' and 'properties' in prop:
+            self._process_object_type_property(prop, field_name, flat_fields, required_mark, prop_desc, spec, field_required)
+        # oneOf 타입인 경우 
+        elif 'oneOf' in prop:
+            self._process_oneof_type_property(prop, field_name, flat_fields, required_mark, prop_desc, spec)
+        # 기본 타입인 경우
+        else:
+            self._add_field(flat_fields, field_name, prop_type, prop_desc, required_mark == "true")
+    
+    def _process_array_type_property(self, prop, field_name, flat_fields, required_mark, prop_desc, spec):
+        """
+        배열 타입 속성을 처리합니다.
+        """
+        items = prop['items']
+        if not isinstance(items, dict):
+            return
+            
+        # $ref가 있는 경우
+        if '$ref' in items and spec:
+            ref = items['$ref']
+            ref_parts = ref.split('/')
+            ref_name = ref_parts[-1] if ref_parts else "object"
+            
+            self._add_field(flat_fields, f"{field_name}[]", f"Array&lt;{ref_name}&gt;", prop_desc, required_mark == "true")
+            self._process_array_items(items, field_name, flat_fields, spec, prop_desc)
+            
+        # 일반 객체 타입인 경우
+        elif items.get('type') == 'object' or 'properties' in items:
+            self._add_field(flat_fields, f"{field_name}[]", "Array&lt;object&gt;", prop_desc, required_mark == "true")
+            
+            if 'properties' in items:
+                self._process_array_items(items, field_name, flat_fields, spec, prop_desc)
                 
-                if 'enum' in sub_prop:
-                    sub_desc = self._process_enum_values(sub_prop, sub_desc)
+        # 기타 기본 타입인 경우
+        else:
+            item_type = items.get('type', '-')
+            self._add_field(flat_fields, f"{field_name}[]", f"Array&lt;{item_type}&gt;", prop_desc, required_mark == "true")
+
+    def _process_list_type_property(self, prop_type, prop, field_name, flat_fields, required_mark, prop_desc, required_props, spec, field_required):
+        """
+        리스트 타입(복합 타입)의 속성을 처리합니다.
+        
+        Args:
+            prop_type: 속성 타입 리스트 (예: ['string', 'null'])
+            prop: 속성 객체
+            field_name: 필드 이름
+            flat_fields: 결과를 담을 평면화된 필드 목록
+            required_mark: 필수 여부 문자열 표시
+            prop_desc: 속성 설명
+            required_props: 필수 속성 목록
+            spec: 전체 OpenAPI 스펙
+            field_required: 필드 필수 여부
+        """
+        # 복합 타입에서 'null'을 제외한 주요 타입 추출
+        non_null_types = [t for t in prop_type if t != 'null']
+        if non_null_types:
+            main_type = non_null_types[0]  # 주요 타입 선택            
+            # 주요 타입이 object이고 properties가 있는 경우 내부 속성 처리
+            if main_type == 'object' and 'properties' in prop:
+                # 객체 자체 필드 추가
+                self._add_field(flat_fields, field_name, prop_type, prop_desc, required_mark == "true")
                 
-                flat_fields.append({
-                    "name": f"`{field_name}[].{sub_name}`",
-                    "type": sub_type,
-                    "required": "true" if sub_required else "false",
-                    "desc": sub_desc
-                })
+                # 객체 내부 속성의 required 필드 처리
+                sub_required_props = prop.get('required', [])
+                self._collect_fields(
+                    prop['properties'], flat_fields, sub_required_props, spec,
+                    f"{field_name}.", False, field_required, sub_required_props
+                )
+            else:
+                # 기본 타입 필드 추가
+                self._add_field(flat_fields, field_name, prop_type, prop_desc, required_mark == "true")
+        else:
+            # 모든 타입이 'null'인 경우 null로 처리
+            self._add_field(flat_fields, field_name, 'null', prop_desc, required_mark == "true")
+
+    def _process_object_type_property(self, prop, field_name, flat_fields, required_mark, prop_desc, spec, field_required):
+        """
+        객체 타입 속성을 처리합니다.
+        
+        Args:
+            prop: 속성 객체
+            field_name: 필드 이름
+            flat_fields: 결과를 담을 평면화된 필드 목록
+            required_mark: 필수 여부 문자열 표시
+            prop_desc: 속성 설명
+            spec: 전체 OpenAPI 스펙
+            field_required: 필드 필수 여부
+        """
+        # 객체 자체 필드 추가
+        self._add_field(flat_fields, field_name, "Object", prop_desc, required_mark == "true")
+        
+        # 객체 내부 속성의 required 필드 처리
+        sub_required_props = prop.get('required', [])
+        
+        # 내부 속성 처리
+        self._collect_fields(
+            prop['properties'], flat_fields, sub_required_props, spec,
+            f"{field_name}.", False, field_required, sub_required_props
+        )
+
+    def _process_oneof_type_property(self, prop, field_name, flat_fields, required_mark, prop_desc, spec):
+        """
+        oneOf 타입 속성을 처리합니다.
+        
+        Args:
+            prop: 속성 객체
+            field_name: 필드 이름
+            flat_fields: 결과를 담을 평면화된 필드 목록
+            required_mark: 필수 여부 문자열 표시
+            prop_desc: 속성 설명
+            spec: 전체 OpenAPI 스펙
+        """
+        # oneOf 타입 처리 - object 타입으로 표시하고 가능한 타입들을 설명에 추가
+        discriminator = prop.get('discriminator')
+        additional_desc = ""
+        
+        if discriminator:
+            mapping = discriminator.get('mapping', {})
+            if mapping:
+                type_options = list(mapping.keys())
+                additional_desc = f"가능한 타입: {', '.join(type_options)}"
+            
+            property_name = discriminator.get('propertyName', 'type')
+            if additional_desc:
+                additional_desc += f" (discriminator: {property_name})"
+            else:
+                additional_desc = f"discriminator 속성: {property_name}"
+        
+        # 설명에 oneOf 정보 추가
+        final_desc = prop_desc
+        if additional_desc:
+            final_desc = f"{prop_desc}<br>({additional_desc})" if prop_desc != '-' else additional_desc
+        
+        # 객체 자체 필드 추가
+        self._add_field(flat_fields, field_name, "Object", final_desc, required_mark == "true")
+        
+        # oneOf 스키마들의 공통/대표 properties 표시
+        self._add_oneof_properties(prop, field_name, flat_fields, spec)

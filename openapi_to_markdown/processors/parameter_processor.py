@@ -59,108 +59,69 @@ class ParameterProcessor:
             elif param_in == 'cookie':
                 cookie_params.append(param)
         
-        # 경로 파라미터 처리
+        # 각 파라미터 유형 처리
         if path_params:
-            markdown.append("\n##### 경로 파라미터\n")
-            markdown.append("| 이름 | 타입 | 설명 | 필수 |")  # 컬럼 순서 변경
-            markdown.append("|------|------|------|:----:|")  # 구분선도 맞게 변경
-            
-            for param in path_params:
-                name = param.get('name', '')
-                required = "true" if param.get('required', False) else "false"
-                description = self.markdown_utils.escape_markdown(param.get('description', '-'))
-                
-                schema = param.get('schema', {})
-                param_type = schema.get('type', '-')
-                
-                # enum 값 처리
-                description = self._process_enum_values(schema, description)
-                
-                # 배열 아이템의 enum 값 처리
-                description = self._process_array_param(schema, description)
-                
-                # explode 처리
-                description = self._process_explode_param(param, description)
-
-                markdown.append(f"| `{name}` | {param_type} | {description} | {required} |")
-
-            markdown.append("")
+            markdown.extend(self._process_param_group(path_params, "경로 파라미터"))
         
-        # 쿼리 파라미터 처리
         if query_params:
-            markdown.append("\n##### 쿼리 파라미터\n")
-            markdown.append("| 이름 | 타입 | 설명 | 필수 |")
-            markdown.append("|------|------|------|:----:|")
-            
-            for param in query_params:
-                name = param.get('name', '')
-                required = "true" if param.get('required', False) else "false"
-                description = self.markdown_utils.escape_markdown(param.get('description', '-'))
-                
-                schema = param.get('schema', {})
-                param_type = schema.get('type', '-')
-                
-                # enum 값 처리
-                description = self._process_enum_values(schema, description)
-                
-                # 배열 아이템의 enum 값 처리
-                description = self._process_array_param(schema, description)
-                
-                # explode 처리
-                description = self._process_explode_param(param, description)
-
-                markdown.append(f"| `{name}` | {param_type} | {description} | {required} |")
-
-            markdown.append("")
+            markdown.extend(self._process_param_group(query_params, "쿼리 파라미터"))
         
-        # 헤더 파라미터 처리
         if header_params:
-            markdown.append("\n##### 헤더 파라미터\n")
-            markdown.append("| 이름 | 타입 | 설명 | 필수 |")
-            markdown.append("|------|------|------|:----:|")
-            
-            for param in header_params:
-                name = param.get('name', '')
-                required = "true" if param.get('required', False) else "false"
-                description = self.markdown_utils.escape_markdown(param.get('description', '-'))
-                
-                schema = param.get('schema', {})
-                param_type = schema.get('type', '-')
-                
-                # enum 값 처리
-                description = self._process_enum_values(schema, description)
-                
-                # explode 처리
-                description = self._process_explode_param(param, description)
-                
-                markdown.append(f"| `{name}` | {param_type} | {required} | {description} |")
-            
-            markdown.append("")
+            markdown.extend(self._process_param_group(header_params, "헤더 파라미터", is_header=True))
         
-        # 쿠키 파라미터 처리
         if cookie_params:
-            markdown.append("\n##### 쿠키 파라미터\n")
-            markdown.append("| 이름 | 타입 | 설명 | 필수 |")
-            markdown.append("|------|------|------|:----:|")
-            
-            for param in cookie_params:
-                name = param.get('name', '')
-                required = "true" if param.get('required', False) else "false"
-                description = self.markdown_utils.escape_markdown(param.get('description', '-'))
-                
-                schema = param.get('schema', {})
-                param_type = schema.get('type', '-')
-                
-                # enum 값 처리
-                description = self._process_enum_values(schema, description)
-                
-                # explode 처리
-                description = self._process_explode_param(param, description)
+            markdown.extend(self._process_param_group(cookie_params, "쿠키 파라미터"))
+        
+        return markdown
 
+    def _process_param_group(self, params, group_name, is_header=False):
+        """
+        특정 그룹의 파라미터를 처리하여 마크다운 테이블을 생성합니다.
+        
+        Args:
+            params: 처리할 파라미터 목록
+            group_name: 파라미터 그룹 이름
+            is_header: 헤더 파라미터인지 여부 (열 순서가 다름)
+            
+        Returns:
+            list: 생성된 마크다운 문자열 목록
+        """
+        markdown = []
+        
+        markdown.append(f"\n##### {group_name}\n")
+        markdown.append("| 이름 | 타입 | 설명 | 필수 |")
+        markdown.append("|------|------|------|:----:|")
+        
+        for param in params:
+            name = param.get('name', '')
+            required = "O" if param.get('required', False) else "X"
+            description = self.markdown_utils.escape_markdown(param.get('description', '-'))
+            
+            schema = param.get('schema', {})
+            param_type = schema.get('type', '-')
+            
+            # 타입 표시 형식 개선
+            if isinstance(param_type, list):
+                param_type = " \\| ".join([t.capitalize() for t in param_type])
+            else:
+                param_type = param_type.capitalize()
+            
+            # enum 값 처리
+            description = self._process_enum_values(schema, description)
+            
+            # 배열 아이템의 enum 값 처리
+            description = self._process_array_param(schema, description)
+            
+            # explode 처리
+            description = self._process_explode_param(param, description)
+
+            # 헤더 파라미터는 열 순서가 다름
+            if is_header:
+                markdown.append(f"| `{name}` | {param_type} | {description} | {required} |")
+            else:
                 markdown.append(f"| `{name}` | {param_type} | {description} | {required} |")
 
-            markdown.append("")
-        
+        markdown.append("")
         return markdown
     
     def _process_enum_values(self, schema, description='-'):
