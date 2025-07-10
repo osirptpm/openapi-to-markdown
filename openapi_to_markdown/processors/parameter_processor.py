@@ -61,17 +61,17 @@ class ParameterProcessor:
         
         # 각 파라미터 유형 처리
         if path_params:
-            markdown.extend(self._process_param_group(path_params, "경로 파라미터"))
+            markdown.extend(self._process_param_group(path_params, "API 요청 경로"))
         
         if query_params:
-            markdown.extend(self._process_param_group(query_params, "쿼리 파라미터"))
-        
+            markdown.extend(self._process_param_group(query_params, "API 요청 쿼리"))
+
         if header_params:
-            markdown.extend(self._process_param_group(header_params, "헤더 파라미터", is_header=True))
+            markdown.extend(self._process_param_group(header_params, "API 요청 헤더", is_header=True))
         
         if cookie_params:
-            markdown.extend(self._process_param_group(cookie_params, "쿠키 파라미터"))
-        
+            markdown.extend(self._process_param_group(cookie_params, "API 요청 쿠키"))
+
         return markdown
 
     def _process_param_group(self, params, group_name, is_header=False):
@@ -88,7 +88,7 @@ class ParameterProcessor:
         """
         markdown = []
         
-        markdown.append(f"\n##### {group_name}\n")
+        markdown.append(f"\n#### {group_name}\n")
         markdown.append("| 이름 | 타입 | 설명 | 필수 |")
         markdown.append("|------|------|------|:----:|")
         

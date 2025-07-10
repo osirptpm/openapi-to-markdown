@@ -70,7 +70,7 @@ class MarkdownGenerator:
         markdown.append(self._generate_endpoints_docs(spec))
         
         # 5. 스키마 문서 생성
-        markdown.append(self._generate_schemas_docs(spec))
+        # markdown.append(self._generate_schemas_docs(spec))
         
         return "\n".join(markdown)
     
@@ -183,15 +183,17 @@ class MarkdownGenerator:
                         
                         endpoints_by_tag[tag].append(endpoint_info)
         
+        inif = 0
         # 태그별 엔드포인트 문서 생성
         for tag, endpoints in endpoints_by_tag.items():
-            markdown.append(f"## {tag}\n")
+            # markdown.append(f"## {tag}\n")
             
             tag_description = tags_dict.get(tag, '')
-            if tag_description:
-                markdown.append(f"{tag_description}\n")
+            # if tag_description:
+                # markdown.append(f"{tag_description}\n")
             
             for endpoint in endpoints:
+                inif += 1
                 path = endpoint['path']
                 method = endpoint['method']
                 operation = endpoint['operation']
@@ -200,13 +202,18 @@ class MarkdownGenerator:
                 anchor = self.markdown_utils.create_anchor(f"{method}-{path}")
                 markdown.append(f"<h3 id='{anchor}'></h3>\n")
                 
-                # 1. 엔드포인트 헤더
-                markdown.append(f"### {method.upper()} {path}\n")
-                
-                # 2. 요약 및 설명
                 summary = operation.get('summary', '')
+                # 테이블 추가
+                ## 인터페이스 ID 는 tag 와 엔드포인트의 인덱스의 곱연산 값
+                markdown.append(f"## {summary}\n")
+                markdown.append(f"| 인터페이스 명 | {summary} | 인터페이스 ID | INIF_{f"{inif:03d}"} |")
+                markdown.append(f"|----------------|----------------|----------------|-----------------|")
+                markdown.append("")
+
+                # 2. 요약 및 설명
                 if summary:
-                    markdown.append(f"**{summary}**\n")
+                    markdown.append(f"### 개요\n")
+                    markdown.append(f"{summary}\n")
                     
                 description = operation.get('description', '')
                 if description:
@@ -214,23 +221,31 @@ class MarkdownGenerator:
                 else:
                     markdown.append("No description provided\n")
                 
+                markdown.append("### 요청\n")
+                # 1. 엔드포인트 헤더
+                # 테이블 형식으로 엔드포인트 정보 표시
+                markdown.append("#### API 요청\n")
+                markdown.append("| Method | URL |")
+                markdown.append("|--------|-----|")
+                markdown.append(f"| {method.upper()} | {path} |")
+
                 # 3. 파라미터
                 parameters = operation.get('parameters', [])
                 if parameters:
-                    markdown.append("#### 요청 파라미터\n")
+                    # markdown.append("#### API 요청 파라미터\n")
                     markdown.extend(self.parameter_processor.process_parameters(parameters, spec))
                 
                 # 4. 요청 본문
                 request_body = operation.get('requestBody')
                 if request_body:
-                    markdown.append("#### 요청 본문\n")
+                    markdown.append("#### API 요청 데이터\n")
                     markdown.extend(self.request_processor.process_request_body(request_body, spec))
-                else:
-                    markdown.append("#### 요청\n\n")
+                # else:
+                #     markdown.append("#### API 요청 본문\n\n")
                   # 5. 응답
                 responses = operation.get('responses', {})
                 if responses:
-                    markdown.append("#### 응답\n")
+                    markdown.append("### 응답\n")
                     
                     # 컨텍스트 정보 구성
                     context = {

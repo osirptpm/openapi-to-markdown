@@ -48,9 +48,9 @@ class RequestProcessor:
             markdown.append(f"{description}\n")
         
         # 필수 여부 추가
-        required = request_body.get('required', False)
-        if required:
-            markdown.append("**필수**: 예\n")
+        # required = request_body.get('required', False)
+        # if required:
+        #     markdown.append("**필수**: 예\n")
         
         # 컨텐츠 타입별 처리
         content = request_body.get('content', {})
@@ -70,9 +70,9 @@ class RequestProcessor:
                 markdown.append(schema_md)
             
             # 예시 처리
-            example_md = self.process_content_examples(content_details, schema, content_type, spec)
-            if example_md:
-                markdown.append(f"\n{example_md}\n")
+            # example_md = self.process_content_examples(content_details, schema, content_type, spec)
+            # if example_md:
+            #     markdown.append(f"\n{example_md}\n")
         
         return markdown
     

@@ -44,43 +44,43 @@ class ResponseProcessor:
             response = self.reference_resolver.resolve_ref(response['$ref'], spec) or response
         
         # 상태 코드 및 설명
-        markdown.append(f"\n**상태 코드**: `{status}`\n")
+        # markdown.append(f"\n**상태 코드**: `{status}`\n")
         
-        description = response.get('description', '')
-        if description:
-            markdown.append(f"**설명**: {description}\n")
-        
-        # 헤더 처리
-        headers = response.get('headers', {})
-        if headers:
-            markdown.append("\n##### 응답 헤더\n")
-            markdown.append("| 이름 | 타입 | 설명 |")
-            markdown.append("|------|------|------|")
-            
-            for header_name, header in headers.items():
-                # $ref 처리
-                if '$ref' in header and spec:
-                    header = self.reference_resolver.resolve_ref(header['$ref'], spec) or header
-                
-                header_type = '-'
-                if 'schema' in header:
-                    schema = header['schema']
-                    header_type = schema.get('type', '-')
-                    if 'format' in schema:
-                        header_type += f" ({schema['format']})"
-                
-                header_desc = self.markdown_utils.escape_markdown(header.get('description', '-'))
-                markdown.append(f"| `{header_name}` | {header_type} | {header_desc} |")
-            
-            markdown.append("")
+        # description = response.get('description', '')
+        # if description:
+        #     markdown.append(f"**설명**: {description}\n")
         
         # 컨텐츠 타입별 처리
         content = response.get('content', {})
         if content:
-            markdown.append("\n##### 응답 스키마\n")
-            
             for content_type, content_details in content.items():
+        
+                # 헤더 처리
+                headers = response.get('headers', {})
+                if headers:
+                    markdown.append("\n#### API 응답 헤더\n")
+                    markdown.append("| 이름 | 타입 | 필수 |")
+                    markdown.append("|------|------|------|")
+                    
+                    for header_name, header in headers.items():
+                        # $ref 처리
+                        if '$ref' in header and spec:
+                            header = self.reference_resolver.resolve_ref(header['$ref'], spec) or header
+                        
+                        header_type = '-'
+                        if 'schema' in header:
+                            schema = header['schema']
+                            header_type = schema.get('type', '-')
+                            if 'format' in schema:
+                                header_type += f" ({schema['format']})"
+                        
+                        header_desc = self.markdown_utils.escape_markdown(header.get('description', '-'))
+                        markdown.append(f"| `{header_name}` | {content_type} | O |")
+                    
+                    markdown.append("")
+                
                 # 스키마가 있는 경우
+                markdown.append("\n#### API 응답 데이터\n")
                 schema = content_details.get('schema', {})
                 
                 # $ref 처리
@@ -98,12 +98,12 @@ class ResponseProcessor:
                     markdown.append("\n")
                 
                 # Content Type 추가
-                markdown.append(f"**Content Type**: {content_type}\n")
+                # markdown.append(f"**Content Type**: {content_type}\n")
                   # 예시 처리
-                example_md = self.process_content_examples(content_details, schema, content_type, spec, context)
-                if example_md:
-                    markdown.append(example_md)
-                    markdown.append("\n")
+                # example_md = self.process_content_examples(content_details, schema, content_type, spec, context)
+                # if example_md:
+                #     markdown.append(example_md)
+                #     markdown.append("\n")
         
         return markdown
     def process_content_examples(self, content_details, schema, content_type, spec=None, context=None):
